@@ -43,7 +43,7 @@ html, body, [data-testid="stAppViewContainer"] {
     font-family: 'Noto Sans SC', sans-serif;
 }
 [data-testid="stHeader"] {background: transparent;}
-.block-container {padding-top: .6rem; padding-bottom: 1rem; max-width: 100%;}
+.block-container {padding: .35rem .55rem .5rem; max-width: 100%;}
 h1,h2,h3,p, label {color:#eaf6ff;}
 .topbar {
     border:1px solid rgba(54,173,255,.55);
@@ -99,28 +99,12 @@ with nav_cols[6]:
 
 st.markdown("<div style='height:7px'></div>", unsafe_allow_html=True)
 
-# ---------------------------- 顶部指标 ----------------------------
-mcols = st.columns(6)
-metrics = [
-    ("教室总数", "03", "间"),
-    ("在校学生", "036", "人"),
-    ("授课教师", "02", "人"),
-    ("实训设备", "12", "台"),
-    ("课堂出勤率", "94.4", "%"),
-    ("设备在线率", "91.7", "%"),
-]
-for col, (k, v, u) in zip(mcols, metrics):
-    with col:
-        st.markdown(f'<div class="metric"><div class="k">{k}</div><div class="v">{v}<span class="u">{u}</span></div></div>', unsafe_allow_html=True)
-
-st.markdown("<div style='height:10px'></div>", unsafe_allow_html=True)
-
 # ---------------------------- 中央三维数字孪生场景 ----------------------------
 scene_html = r"""
 <!DOCTYPE html><html><head><meta charset="utf-8">
 <style>
 *{box-sizing:border-box}body{margin:0;background:#020b16;color:#eaf7ff;font-family:Arial,"Microsoft YaHei",sans-serif;overflow:hidden}
-#wrap{position:relative;width:100%;height:650px;background:radial-gradient(ellipse at center,#102b45,#020914 75%);border:1px solid #17649a;border-radius:8px;overflow:hidden}
+#wrap{position:relative;width:100%;height:780px;background:radial-gradient(ellipse at center,#102b45,#020914 75%);border:1px solid #17649a;border-radius:8px;overflow:hidden}
 #view{width:100%;height:100%;display:block}
 .hud{position:absolute;z-index:3;pointer-events:none;text-shadow:0 1px 4px #000}
 .hud.top{left:16px;top:13px;font-size:13px;color:#9edcff;letter-spacing:2px}
@@ -222,21 +206,25 @@ window.addEventListener('resize',()=>{renderer.setSize(wrap.clientWidth,wrap.cli
 </script></body></html>
 """
 
-left, center, right = st.columns([1.05, 2.7, 1.05], gap="small")
+left, center, right = st.columns([1.15, 3.5, 1.15], gap="small")
 
 with left:
-    st.markdown('<div class="panel"><div class="panel-title">教室实时概况</div>', unsafe_allow_html=True)
+    st.markdown('<div class="panel"><div class="panel-title">教室运行总览</div>', unsafe_allow_html=True)
     st.markdown(f"**{st.session_state.room}**")
     st.markdown('<span class="status-ok">● 正常授课中</span>', unsafe_allow_html=True)
     st.markdown("---")
-    st.markdown("**课堂出勤**")
+    for title, value, unit in [
+        ("教室总数", "03", "间"), ("在校学生", "036", "人"),
+        ("授课教师", "02", "人"), ("实训设备", "12", "台")
+    ]:
+        st.markdown(f"<div style='display:flex;justify-content:space-between;margin:9px 0'><span class='small'>{title}</span><b style='color:#62d9ff;font-size:19px'>{value} <span class='small'>{unit}</span></b></div>", unsafe_allow_html=True)
+    st.markdown("</div>", unsafe_allow_html=True)
+
+    st.markdown('<div class="panel"><div class="panel-title">学生考勤统计</div>', unsafe_allow_html=True)
+    st.markdown("<div style='font-size:30px;color:#4fe0bd;font-weight:800'>94.4%</div><div class='small'>课堂实时出勤率</div>", unsafe_allow_html=True)
     st.progress(0.944)
-    st.markdown("已签到 **34** 人 / 应到 36 人")
-    st.markdown("---")
-    st.markdown("**学生实训状态**")
-    for name, value in [("设备操作", 0.72), ("任务学习", 0.18), ("待机", 0.10)]:
-        st.caption(name)
-        st.progress(value)
+    for label, value in [("已签到 34 人", "34"), ("迟到 1 人", "01"), ("缺勤 1 人", "01")]:
+        st.markdown(f"<div style='display:flex;justify-content:space-between;margin-top:7px'><span class='small'>{label}</span><b>{value}</b></div>", unsafe_allow_html=True)
     st.markdown("</div>", unsafe_allow_html=True)
 
     st.markdown('<div class="panel"><div class="panel-title">教师授课信息</div>', unsafe_allow_html=True)
@@ -244,51 +232,52 @@ with left:
     st.caption("课程：智能制造综合实训")
     st.caption("班级：智能制造 2401 班")
     st.caption("课时：第 3 / 4 节")
+    st.markdown("<hr>", unsafe_allow_html=True)
+    st.markdown("**课堂任务进度**")
+    for name, value in [("任务一", 0.90), ("任务二", 0.76), ("任务三", 0.62)]:
+        st.caption(name)
+        st.progress(value)
     st.markdown("</div>", unsafe_allow_html=True)
 
 with center:
     st.markdown('<div class="panel-title">三维数字孪生教室 / 3D CLASSROOM</div>', unsafe_allow_html=True)
-    components.html(scene_html, height=660, scrolling=False)
+    components.html(scene_html, height=790, scrolling=False)
     st.caption("提示：在三维场景中拖动鼠标旋转视角，滚轮缩放；点击白色实训控制台或人物查看信息。")
 
 with right:
     st.markdown('<div class="panel"><div class="panel-title">设备运行监测</div>', unsafe_allow_html=True)
+    st.markdown("<div style='font-size:28px;color:#4fe0bd;font-weight:800'>91.7%</div><div class='small'>设备在线率 · 11 / 12 台在线</div>", unsafe_allow_html=True)
+    st.progress(0.917)
     for name, status, color in [
-        ("HPY-RS03 实训控制台 01", "运行中", "status-ok"),
-        ("HPY-RS03 实训控制台 02", "运行中", "status-ok"),
-        ("HPY-RS03 实训控制台 03", "待巡检", "status-warn"),
-        ("教学大屏", "在线", "status-ok"),
-        ("环境传感器", "在线", "status-ok"),
+        ("控制台 01", "运行中", "status-ok"), ("控制台 02", "运行中", "status-ok"),
+        ("控制台 03", "待巡检", "status-warn"), ("控制台 04", "运行中", "status-ok"),
+        ("教学大屏", "在线", "status-ok"), ("环境传感器", "在线", "status-ok"),
     ]:
-        st.markdown(f"**{name}**  <span class='{color}'>● {status}</span>", unsafe_allow_html=True)
-        st.markdown("<hr style='margin:6px 0'>", unsafe_allow_html=True)
+        st.markdown(f"<div style='display:flex;justify-content:space-between;margin:8px 0'><span class='small'>{name}</span><span class='{color}'>{status}</span></div>", unsafe_allow_html=True)
     st.markdown("</div>", unsafe_allow_html=True)
 
-    st.markdown('<div class="panel"><div class="panel-title">课堂异常预警</div>', unsafe_allow_html=True)
-    st.markdown("🟡 03号实训控制台待巡检")
-    st.markdown("🟢 当前无安全告警")
-    st.markdown("🟢 全部学生已完成身份核验")
+    st.markdown('<div class="panel"><div class="panel-title">学生实训状态</div>', unsafe_allow_html=True)
+    for name, value, count in [("设备操作", 0.72, "26人"), ("任务学习", 0.18, "6人"), ("待机状态", 0.10, "4人")]:
+        st.markdown(f"<div style='display:flex;justify-content:space-between'><span class='small'>{name}</span><b>{count}</b></div>", unsafe_allow_html=True)
+        st.progress(value)
     st.markdown("</div>", unsafe_allow_html=True)
 
-# ---------------------------- 页面下方业务模块 ----------------------------
-st.markdown("<div style='height:5px'></div>", unsafe_allow_html=True)
-st.markdown('<div class="panel-title">课堂运行数据</div>', unsafe_allow_html=True)
-c1, c2, c3 = st.columns(3)
-with c1:
-    st.markdown('<div class="panel"><b>学生出勤统计</b>', unsafe_allow_html=True)
-    st.bar_chart({"已签到": 34, "迟到": 1, "缺勤": 1}, color=["#26c6da"])
-    st.markdown("</div>", unsafe_allow_html=True)
-with c2:
-    st.markdown('<div class="panel"><b>设备使用率</b>', unsafe_allow_html=True)
-    st.bar_chart({"控制台01": 92, "控制台02": 85, "控制台03": 48, "教学大屏": 98})
-    st.markdown("</div>", unsafe_allow_html=True)
-with c3:
-    st.markdown('<div class="panel"><b>课堂任务完成情况</b>', unsafe_allow_html=True)
-    st.bar_chart({"任务一": 90, "任务二": 76, "任务三": 62, "任务四": 38})
+    st.markdown('<div class="panel"><div class="panel-title">异常预警信息</div>', unsafe_allow_html=True)
+    st.markdown("<div class='status-warn'>● 03号实训控制台待巡检</div>", unsafe_allow_html=True)
+    st.markdown("<hr style='margin:7px 0'>", unsafe_allow_html=True)
+    st.markdown("<div class='status-ok'>● 当前无安全告警</div>", unsafe_allow_html=True)
+    st.markdown("<hr style='margin:7px 0'>", unsafe_allow_html=True)
+    st.markdown("<div class='status-ok'>● 学生身份核验正常</div>", unsafe_allow_html=True)
     st.markdown("</div>", unsafe_allow_html=True)
 
+    st.markdown('<div class="panel"><div class="panel-title">课堂关键指标</div>', unsafe_allow_html=True)
+    for name, value in [("平均实训完成率", "76%"), ("设备平均利用率", "82%"), ("课堂互动次数", "28次")]:
+        st.markdown(f"<div style='display:flex;justify-content:space-between;margin:10px 0'><span class='small'>{name}</span><b style='color:#65d7ff'>{value}</b></div>", unsafe_allow_html=True)
+    st.markdown("</div>", unsafe_allow_html=True)
+
+# ---------------------------- 大屏底部状态栏 ----------------------------
 st.markdown(
-    f"<div style='text-align:center;color:#557d9b;font-size:11px;padding:12px'>"
+    f"<div style='text-align:center;color:#557d9b;font-size:11px;padding:8px'>"
     f"课堂数字孪生服务平台 · 演示数据 · {datetime.now().strftime('%Y-%m-%d %H:%M:%S')} "
     f"</div>", unsafe_allow_html=True
 )
