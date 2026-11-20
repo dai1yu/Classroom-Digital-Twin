@@ -73,11 +73,11 @@ html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#04131e;col
 .chart-labels{display:flex;justify-content:space-between;color:#5d9eaa;font-size:8px;margin-top:-2px}
 .alert{border-left:3px solid #ffba45;background:rgba(16,44,59,.75);padding:7px 7px;margin:6px 0;font-size:9px;color:#a9d5dc;line-height:1.5}
 .alert.ok{border-left-color:#21dba9}.alert.red{border-left-color:#ff5964}
-.camera{height:130px;border:1px solid rgba(31,214,224,.35);position:relative;overflow:hidden;background:linear-gradient(145deg,#061a28,#123849)}
+.camera{height:150px;border:1px solid rgba(31,214,224,.48);position:relative;overflow:hidden;background:linear-gradient(180deg,#1d3944 0%,#36545a 46%,#172d37 47%,#0b202b 100%);box-shadow:inset 0 0 24px rgba(0,0,0,.55)}
 .camera:before{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(39,130,146,.22) 1px,transparent 1px),linear-gradient(90deg,rgba(39,130,146,.22) 1px,transparent 1px);background-size:19px 19px}
-.cam-machine{position:absolute;bottom:19px;width:24%;height:53px;background:linear-gradient(135deg,#7298a3,#25495a);border:1px solid #9acbd2;box-shadow:0 0 12px rgba(0,220,230,.15)}
-.cam-machine:after{content:"";position:absolute;left:16%;right:16%;top:8px;height:27px;background:#092431;border:1px solid #45a4b3}
-.cam-label{position:absolute;top:7px;left:8px;font-size:8px;color:#ff6975}.cam-time{position:absolute;bottom:5px;right:8px;font-size:8px;color:#a5dce2}
+.cam-machine{position:absolute;bottom:22px;width:24%;height:58px;background:linear-gradient(135deg,#b9c8c9 0%,#627c84 42%,#243e49 100%);border:1px solid #9acbd2;box-shadow:0 0 12px rgba(0,220,230,.15);clip-path:polygon(8% 0,92% 0,100% 100%,0 100%)}
+.cam-machine:after{content:"";position:absolute;left:16%;right:16%;top:8px;height:27px;background:linear-gradient(145deg,#102d39,#06151e);border:2px solid #9bb8bd;box-shadow:inset 0 0 8px #08788c}
+.cam-label{position:absolute;top:7px;left:8px;font-size:8px;color:#ff6975;text-shadow:0 0 5px #ff2438}.cam-time{position:absolute;bottom:5px;right:8px;font-size:8px;color:#a5dce2}
 .bottom{position:absolute;z-index:4;left:15px;right:15px;bottom:10px;height:78px;display:grid;grid-template-columns:1.25fr 1fr 1fr 1fr 1.25fr;gap:8px}
 .bottom-card{background:linear-gradient(135deg,rgba(3,28,41,.94),rgba(4,22,34,.86));border:1px solid rgba(28,179,195,.38);padding:10px 12px;position:relative;box-shadow:0 0 12px rgba(0,180,200,.06)}
 .bottom-card label{display:block;color:#6dbbc4;font-size:9px;margin-bottom:7px}.bottom-card strong{font-size:20px;color:#d9ffff;font-weight:600}.bottom-card small{font-size:9px;color:#45c9d6;margin-left:4px}
@@ -156,7 +156,7 @@ html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#04131e;col
   <div class="section-label">视频监控窗口 <span style="margin-left:auto;color:#55b9c7">CAM-01 ONLINE</span></div>
   <div class="camera">
     <div class="cam-label">● LIVE / 实训室全景</div>
-    <div class="cam-machine" style="left:7%"></div><div class="cam-machine" style="left:38%"></div><div class="cam-machine" style="left:69%"></div>
+    <div class="cam-machine" style="left:7%"></div><div class="cam-machine" style="left:38%"></div><div class="cam-machine" style="left:69%"></div><div style="position:absolute;bottom:22px;left:27%;width:12px;height:37px;background:#203e4b;border-radius:7px 7px 2px 2px;box-shadow:0 -10px 0 -1px #c79d7a,0 0 0 1px #7ba5ae"></div><div style="position:absolute;bottom:22px;left:60%;width:12px;height:37px;background:#4a596a;border-radius:7px 7px 2px 2px;box-shadow:0 -10px 0 -1px #c79d7a,0 0 0 1px #7ba5ae"></div>
     <div class="cam-time" id="camTime">CAM-01　--:--:--</div>
   </div>
   <div class="section-label">告警预警列表</div>
@@ -204,16 +204,16 @@ const scene=new THREE.Scene();
 scene.background=new THREE.Color(0x061724);
 scene.fog=new THREE.Fog(0x061724,42,105);
 const camera=new THREE.PerspectiveCamera(39,innerWidth/innerHeight,.1,150);
-camera.position.set(18.5,11.8,24.5);
+camera.position.set(16.2,9.1,21.8);
 const controls=new OrbitControls(camera,renderer.domElement);
-controls.target.set(0,2.25,-0.4);
+controls.target.set(0,1.95,-0.5);
 controls.enableDamping=true;controls.dampingFactor=.055;
 controls.minDistance=12;controls.maxDistance=39;
 controls.maxPolarAngle=Math.PI*.46;
 controls.minPolarAngle=.18;
 controls.update();
-const defaultPos=new THREE.Vector3(18.5,11.8,24.5);
-const defaultTarget=new THREE.Vector3(0,2.25,-0.4);
+const defaultPos=new THREE.Vector3(16.2,9.1,21.8);
+const defaultTarget=new THREE.Vector3(0,1.95,-0.5);
 
 scene.add(new THREE.HemisphereLight(0xc8f3ff,0x253b45,2.45));
 const key=new THREE.DirectionalLight(0xf1fbff,3.25);key.position.set(-12,24,15);key.castShadow=true;key.shadow.mapSize.set(2048,2048);key.shadow.camera.left=-24;key.shadow.camera.right=24;key.shadow.camera.top=24;key.shadow.camera.bottom=-24;scene.add(key);
@@ -280,50 +280,88 @@ const cabinet=mat(0xa9bec3,.66,.31), cabinetDark=mat(0x344f5b,.72,.30), black=ma
 const stations=[];
 function makeConsole(x,z,index){
  const g=new THREE.Group();g.position.set(x,0,z);scene.add(g);
- // plinth and industrial cabinet shell
- box(g,0,.16,0,2.55,.30,1.72,black);
- box(g,0,1.42,0,2.35,2.35,1.58,cabinet);
- box(g,0,2.63,0,2.40,.12,1.64,trim);
- // front door and dark inspection window
- box(g,-.28,1.40,.806,1.38,1.78,.045,cabinetDark);
- box(g,-.28,1.53,.835,1.12,1.36,.025,glass,false);
- line(g,[-.28,0.62,.86],[-.28,2.22,.86],0x9bbbc4,.018);
- box(g,.45,1.32,.845,.055,.30,.05,keyMat);
- // lower cooling vents and industrial door hardware
- for(let i=0;i<8;i++)box(g,-.68+i*.17,0.48,.84,.095,.035,.025,black,false);
- box(g,-.28,.43,.86,1.45,.10,.055,cabinetDark,false);
- // door hinge blocks and recessed inspection handle
- for(const yy of [.78,1.98])box(g,-.91,yy,.86,.07,.20,.07,trim,false);
- box(g,.36,1.43,.875,.07,.42,.035,black,false);
- // raised operator panel / sloped console shoulder
- const panel=box(g,.72,1.86,.80,.78,1.22,.20,black);panel.rotation.x=-.12;
- box(g,.70,2.16,.91,.72,.58,.07,trim,false);
- const monitor=box(g,.70,2.16,.953,.62,.46,.025,screenMat,false);
- // CNC monitor status graphics
- for(let i=0;i<4;i++)box(g,.48+i*.145,2.29,.972,.095,.018,.008,mat([0x22dce8,0x27b5d0,0x54e5b5,0xffc45a][i],0,.3,.25),false);
- for(let i=0;i<3;i++)box(g,.52,2.17-i*.075,.972,.07,.012,.008,mat(0x56b9c9,0,.4,.12),false);
- // keypad surface
- box(g,.72,1.55,.94,.66,.40,.10,black);
- for(let r=0;r<3;r++)for(let c=0;c<4;c++){
-  const k=box(g,.48+c*.15,1.66-r*.105,1.005,.085,.055,.035,(r===0&&c===0)?amber:keyMat,false);
+ // HPY-RS03: white one-piece mobile training console, based on the supplied reference photos
+ const white=new THREE.MeshStandardMaterial({color:0xe8e9e6,metalness:.16,roughness:.34});
+ const whiteSide=new THREE.MeshStandardMaterial({color:0xd8dcda,metalness:.20,roughness:.42});
+ const blackGlass=new THREE.MeshPhysicalMaterial({color:0x07131b,metalness:.42,roughness:.12,clearcoat:.9,clearcoatRoughness:.08});
+ const darkPanel=new THREE.MeshStandardMaterial({color:0x171e23,metalness:.38,roughness:.34});
+ const silver=new THREE.MeshStandardMaterial({color:0x9da8aa,metalness:.78,roughness:.25});
+ const rubber=new THREE.MeshStandardMaterial({color:0x171b1e,metalness:.12,roughness:.72});
+ const redButton=new THREE.MeshStandardMaterial({color:0xe51d25,metalness:.12,roughness:.28,emissive:0x370000});
+ const greenLed=new THREE.MeshStandardMaterial({color:0x26e5a5,emissive:0x087a54,emissiveIntensity:.8});
+ const amberLed=new THREE.MeshStandardMaterial({color:0xffc34b,emissive:0x754000,emissiveIntensity:.7});
+ const blueLed=new THREE.MeshStandardMaterial({color:0x2ac6ef,emissive:0x075b88,emissiveIntensity:.8});
+ // Low, wide wheeled base and broad white cabinet body
+ box(g,0,.12,0,2.55,.20,1.72,rubber);
+ for(const xx of [-1.02,1.02])for(const zz of [-.62,.62]){
+   const caster=cylinder(g,xx,.10,zz,.105,.105,.10,silver,18);caster.rotation.x=Math.PI/2;
+   cylinder(g,xx,.055,zz,.055,.055,.08,rubber,16);
  }
- // emergency stop with yellow collar and red mushroom cap
- cylinder(g,.98,1.48,1.00,.15,.15,.08,amber);
- cylinder(g,.98,1.55,1.00,.105,.105,.10,red);
- // handwheel ring and hub on right edge
- const wheel=new THREE.Mesh(new THREE.TorusGeometry(.16,.025,10,28),keyMat);wheel.position.set(1.10,1.15,1.00);g.add(wheel);
- cylinder(g,1.10,1.15,1.015,.045,.045,.05,black);
- line(g,[.94,1.15,1.02],[1.26,1.15,1.02],0xb8dce2,.012);
- // top tri-colour signal tower
- cylinder(g,-.86,2.78,.10,.055,.055,.22,black);
- cylinder(g,-.86,2.93,.10,.09,.09,.12,red);
- cylinder(g,-.86,3.08,.10,.09,.09,.12,amber);
- cylinder(g,-.86,3.23,.10,.09,.09,.12,green);
- // side vents and side panel
- box(g,1.19,1.35,-.05,.035,1.0,.78,cabinetDark);
- for(let i=0;i<7;i++)box(g,1.215,.95+i*.12,-.05,.025,.035,.58,trim,false);
- // label plaque
- box(g,0,2.48,.82,.80,.16,.035,black,false);
+ box(g,0,.94,-.02,2.35,1.58,1.48,white);
+ // front lower access panel, seams and vent grille
+ box(g,0,.91,.735,2.12,1.38,.035,whiteSide,false);
+ box(g,.52,.91,.765,.72,.74,.025,white,false);
+ for(let i=0;i<9;i++)box(g,.20+i*.075,.52,.789,.045,.018,.012,silver,false);
+ box(g,-.78,1.48,.765,.06,.23,.035,silver,false);
+ // upper sloped monitor housing: angled rear spine with large framed widescreen
+ const back=box(g,0,2.30,-.28,2.18,1.54,.18,white);back.rotation.x=-.17;
+ // screen frame tilted slightly backward
+ const frame=box(g,0,2.52,.00,2.02,1.25,.16,blackGlass);frame.rotation.x=-.12;
+ const screen=box(g,0,2.53,.092,1.78,1.00,.025,new THREE.MeshStandardMaterial({color:0x102b36,emissive:0x063344,emissiveIntensity:.48,metalness:.22,roughness:.18}));screen.rotation.x=-.12;
+ // screen content lines and status blocks
+ for(let i=0;i<5;i++)box(g,-.70+i*.30,2.91,.113,.22,.025,.008,mat(0x4ac5d4,.05,.3,0x0a4b5b),false);
+ for(let i=0;i<4;i++)box(g,-.69,2.73-i*.13,.115,.42-i*.035,.018,.008,mat(0x73aeb8,.05,.4,0x092e3a),false);
+ box(g,.48,2.70,.116,.42,.38,.012,mat(0x123f50,.1,.25,0x07556b),false);
+ // HPY-RS03 model name strip above screen
+ box(g,0,3.18,-.005,1.92,.19,.10,whiteSide,false);
+ // desk / operator shelf projecting forward
+ box(g,0,1.72,.86,2.78,.18,1.02,white);
+ box(g,0,1.615,.91,2.70,.055,.94,mat(0x262b2e,.28,.5),false);
+ // angled black control deck, with dense real-world button layout
+ const deck=box(g,0,1.91,.93,1.78,.10,.68,darkPanel);deck.rotation.x=-.16;
+ // panel border
+ box(g,0,1.975,.93,1.82,.025,.72,silver,false).rotation.x=-.16;
+ // rows of illuminated and physical keys
+ for(let r=0;r<3;r++)for(let c=0;c<7;c++){
+   const bx=-.68+c*.225, by=1.93-r*.105;
+   const color=(r===2&&c===1)?redButton:((r===0&&c===5)?amberLed:((c===0&&r===1)?greenLed:keyMat));
+   box(g,bx,by,1.245,.115,.055,.065,color,false);
+   box(g,bx,by+.035,1.282,.09,.012,.012,black,false);
+ }
+ // rotary selectors and knobs (cylinders face forward)
+ for(const [kx,ky,rr] of [[-.64,2.09,.095],[-.28,2.09,.105],[.12,2.09,.085],[.48,2.09,.085],[.72,2.09,.075]]){
+   const collar=cylinder(g,kx,ky,1.20,rr*1.28,rr*1.28,.07,silver,24);collar.rotation.x=Math.PI/2;
+   const knob=cylinder(g,kx,ky,1.25,rr,rr,.10,black,24);knob.rotation.x=Math.PI/2;
+   box(g,kx,ky+rr*.55,1.31,.018,rr*.48,.018,white,false);
+ }
+ // large emergency stop with yellow safety collar
+ const collar=cylinder(g,-.70,1.79,1.22,.19,.19,.09,amberLed,32);collar.rotation.x=Math.PI/2;
+ const eStop=cylinder(g,-.70,1.79,1.30,.135,.135,.12,redButton,32);eStop.rotation.x=Math.PI/2;
+ // separate manual pulse handwheel mounted on right side of control deck
+ const wheel=new THREE.Mesh(new THREE.TorusGeometry(.19,.027,12,36),silver);wheel.position.set(1.05,1.91,1.13);wheel.rotation.x=Math.PI/2;g.add(wheel);
+ const hub=cylinder(g,1.05,1.91,1.16,.065,.065,.10,black,24);hub.rotation.x=Math.PI/2;
+ const spoke1=box(g,1.05,1.91,1.19,.025,.32,.025,silver,false);const spoke2=box(g,1.05,1.91,1.19,.32,.025,.025,silver,false);
+ // keyboard on the work shelf, separate keycaps and space bar
+ box(g,-.40,1.69,1.24,1.16,.055,.40,rubber,false);
+ for(let r=0;r<4;r++)for(let c=0;c<13;c++)box(g,-.91+c*.085,1.73-r*.025,1.39-r*.085,.064,.018,.055,mat(0x9ca8aa,.12,.45),false);
+ box(g,-.42,1.655,1.13,.38,.025,.07,mat(0xb8c0c0,.12,.55),false);
+ // side-mounted coiled cable and protective conduit, routed down cabinet
+ const cableCurve=new THREE.CatmullRomCurve3([new THREE.Vector3(1.12,2.95,-.30),new THREE.Vector3(1.28,2.72,-.12),new THREE.Vector3(1.28,2.15,.15),new THREE.Vector3(1.30,1.25,.34),new THREE.Vector3(1.28,.35,.48)]);
+ const cable=new THREE.Mesh(new THREE.TubeGeometry(cableCurve,42,.035,8,false),rubber);g.add(cable);
+ // top mast and three-colour stack light
+ cylinder(g,-.86,3.34,-.34,.045,.045,.24,silver,16);
+ for(const [yy,material] of [[3.48,redButton],[3.62,amberLed],[3.76,greenLed]]){
+   const lamp=cylinder(g,-.86,yy,-.34,.085,.085,.115,material,20);stations.push(lamp);
+ }
+ // ventilation slots, tiny screws and feet detail
+ for(let i=0;i<8;i++)box(g,.48+i*.09,.40,.777,.055,.018,.012,black,false);
+ for(const xx of [-.95,.95])for(const yy of [.30,1.55]){const screw=cylinder(g,xx,yy,.79,.025,.025,.018,silver,12);screw.rotation.x=Math.PI/2;}
+ // small manufacturer badge on cabinet front
+ box(g,0,1.12,.795,.72,.20,.025,white,false);
+ box(g,0,1.13,.815,.58,.09,.012,mat(0x174a7a,.2,.3),false);
+ // subtle side service panel
+ box(g,1.185,1.02,-.12,.035,.68,.68,whiteSide,false);
+ for(let i=0;i<6;i++)box(g,1.21,.78+i*.085,-.12,.018,.025,.44,silver,false);
  stations.push(g);return g;
 }
 // 7 machines arranged in two orderly rows, leaving central aisle
@@ -365,18 +403,55 @@ function makeCCTV(x,z,rot=0){
 makeCCTV(-15,-9,.6);makeCCTV(15,-9,2.5);makeCCTV(-15,9,-.6);makeCCTV(15,9,-2.5);
 
 // Human silhouettes for classroom scale
-function makePerson(x,z,shirt=0x286b87){
+function limbBetween(parent,a,b,radius,material){
+ const A=new THREE.Vector3(...a),B=new THREE.Vector3(...b),d=B.clone().sub(A);
+ const mesh=new THREE.Mesh(new THREE.CylinderGeometry(radius*.82,radius,d.length(),12),material);
+ mesh.position.copy(A.add(B).multiplyScalar(.5));mesh.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),d.normalize());mesh.castShadow=true;parent.add(mesh);
+ const joint=new THREE.Mesh(new THREE.SphereGeometry(radius*1.02,12,10),material);joint.position.set(...b);joint.castShadow=true;parent.add(joint);return mesh;
+}
+function makePerson(x,z,shirt=0x286b87,pose='standing'){
  const g=new THREE.Group();g.position.set(x,0,z);scene.add(g);
- const body= new THREE.Mesh(new THREE.CapsuleGeometry(.24,.66,6,12),mat(shirt,.18,.58));body.position.y=1.08;body.castShadow=true;g.add(body);
- const vest=box(g,0,1.10,.205,.30,.55,.035,mat(0xd7b94e,.1,.65),false);vest.rotation.z=.02;
- const head=new THREE.Mesh(new THREE.SphereGeometry(.17,20,16),mat(0xe0c3a7,.05,.72));head.position.y=1.62;g.add(head);
- const neck=cylinder(g,0,1.43,0,.075,.075,.13,mat(0xb88f76),14);
- const helmet=new THREE.Mesh(new THREE.SphereGeometry(.20,16,10,0,Math.PI*2,0,Math.PI/2),amber);helmet.position.y=1.72;g.add(helmet);
- for(const dx of [-.11,.11]){line(g,[dx,.72,0],[dx*1.25,.12,.02],0x263b45,.065);line(g,[dx,.12,.02],[dx*1.7,.07,.12],0x101d25,.075);}
- for(const dx of [-.24,.24]){line(g,[dx,.32,0],[dx*1.4,1.12,.04],shirt,.07);cylinder(g,dx*1.4,1.12,.04,.07,.07,.12,mat(0xe0c3a7),12); }
+ const skin=new THREE.MeshStandardMaterial({color:0xc99573,roughness:.78});
+ const top=new THREE.MeshStandardMaterial({color:shirt,roughness:.72});
+ const pants=new THREE.MeshStandardMaterial({color:0x263744,roughness:.82});
+ const shoe=new THREE.MeshStandardMaterial({color:0x151e24,roughness:.8});
+ const hair=new THREE.MeshStandardMaterial({color:0x20252a,roughness:.9});
+ // human proportions, layered torso, neck, head and face
+ const torso=new THREE.Mesh(new THREE.CapsuleGeometry(.235,.48,7,14),top);torso.position.set(0,1.16,0);torso.castShadow=true;g.add(torso);
+ const collar=new THREE.Mesh(new THREE.TorusGeometry(.105,.025,8,18),mat(0xd6dfe0,.05,.75));collar.position.set(0,1.40,.02);collar.rotation.x=Math.PI/2;g.add(collar);
+ const neck=new THREE.Mesh(new THREE.CylinderGeometry(.075,.085,.16,14),skin);neck.position.y=1.53;g.add(neck);
+ const head=new THREE.Mesh(new THREE.SphereGeometry(.17,24,20),skin);head.scale.set(.91,1.12,.90);head.position.set(0,1.75,.015);head.castShadow=true;g.add(head);
+ // ears, hair cap, brows and eyes add facial definition
+ for(const side of [-1,1]){
+  const ear=new THREE.Mesh(new THREE.SphereGeometry(.035,12,10),skin);ear.position.set(side*.16,1.75,.005);g.add(ear);
+  const eye=new THREE.Mesh(new THREE.SphereGeometry(.014,10,8),black);eye.position.set(side*.055,1.78,.164);g.add(eye);
+  const brow=new THREE.Mesh(new THREE.BoxGeometry(.045,.012,.012),hair);brow.position.set(side*.055,1.81,.16);g.add(brow);
+ }
+ const hairCap=new THREE.Mesh(new THREE.SphereGeometry(.174,20,12,0,Math.PI*2,0,Math.PI*.58),hair);hairCap.position.set(0,1.82,-.008);g.add(hairCap);
+ const nose=new THREE.Mesh(new THREE.SphereGeometry(.022,10,8),skin);nose.position.set(0,1.735,.17);g.add(nose);
+ // trousers, knees and shoes; two articulated legs
+ for(const side of [-1,1]){
+  const hip=[side*.105,.91,0],knee=[side*.13,.49,.025],ankle=[side*.14,.13,.05];
+  limbBetween(g,hip,knee,.095,pants);limbBetween(g,knee,ankle,.075,pants);
+  const foot=new THREE.Mesh(new THREE.BoxGeometry(.16,.09,.28),shoe);foot.position.set(side*.14,.075,.13);foot.castShadow=true;g.add(foot);
+ }
+ // arms with shoulder, elbow, forearm and hands; relaxed / operating pose
+ for(const side of [-1,1]){
+  const shoulder=[side*.22,1.35,0];
+  const elbow=pose==='operating'?[side*.36,1.12,.28]:[side*.36,1.05,.04];
+  const hand=pose==='operating'?[side*.28,1.12,.55]:[side*.43,.78,.08];
+  limbBetween(g,shoulder,elbow,.075,top);limbBetween(g,elbow,hand,.055,top);
+  const palm=new THREE.Mesh(new THREE.SphereGeometry(.065,12,10),skin);palm.position.set(...hand);g.add(palm);
+  for(let f=0;f<3;f++)limbBetween(g,[hand[0]+(f-1)*.018,hand[1]-.015,hand[2]],[hand[0]+(f-1)*.022,hand[1]-.07,hand[2]+.015],.012,skin);
+ }
+ // safety helmet: hard shell + brim, not a floating sphere
+ const helmetShell=new THREE.Mesh(new THREE.SphereGeometry(.205,24,14,0,Math.PI*2,0,Math.PI/2),amber);helmetShell.scale.set(1.05,.72,1.0);helmetShell.position.set(0,1.91,0);g.add(helmetShell);
+ const brim=new THREE.Mesh(new THREE.CylinderGeometry(.225,.225,.025,24),amber);brim.position.set(0,1.88,0);g.add(brim);
+ // small reflective vest strips
+ for(const yy of [1.05,1.24]){const strip=new THREE.Mesh(new THREE.BoxGeometry(.40,.035,.012),mat(0xe7d27b,.1,.45));strip.position.set(0,yy,.225);g.add(strip);}
  return g;
 }
-const people=[makePerson(-10,-1.2),makePerson(10,-1.5,0x6a596f),makePerson(-13,4,0x326e63)];
+const people=[makePerson(-10,-1.2,0x286b87,'operating'),makePerson(10,-1.5,0x6a596f,'standing'),makePerson(-13,4,0x326e63,'standing')];
 // Ceiling-mounted camera viewing frustum hints
 const frustumMat=new THREE.LineBasicMaterial({color:0x16d9df,transparent:true,opacity:.18});
 for(const [x,z] of [[-15,-9],[15,-9]]){const geo=new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(x,5.3,z),new THREE.Vector3(x-2,1.0,z+3),new THREE.Vector3(x+2,1.0,z+3),new THREE.Vector3(x,5.3,z)]);scene.add(new THREE.Line(geo,frustumMat));}
@@ -388,7 +463,7 @@ let last=0;
 function animate(t){
  requestAnimationFrame(animate);
  const sec=t*.001;
- stations.forEach((g,i)=>{const lamp=g.children.filter(o=>o.material===green);if(lamp.length)lamp[0].material.emissiveIntensity=.45+.25*Math.sin(sec*2+i*.4);});
+ stations.forEach((lamp,i)=>{if(lamp.material && lamp.material.emissive) lamp.material.emissiveIntensity=.55+.25*Math.sin(sec*2+i*.4);});
  if(patrol){people[0].position.x=-10+Math.sin(sec*.55)*2.3;people[0].position.z=-1.2+Math.cos(sec*.55)*1.0;}
  controls.update();renderer.render(scene,camera);
 }
