@@ -9,7 +9,7 @@ import streamlit as st
 import streamlit.components.v1 as components
 
 st.set_page_config(
-    page_title="智能制造课堂数字孪生平台",
+    page_title="课堂数字孪生平台",
     page_icon="🏭",
     layout="wide",
     initial_sidebar_state="collapsed",
@@ -30,7 +30,7 @@ html = r"""
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>智能制造课堂数字孪生平台</title>
+<title>课堂数字孪生平台</title>
 <style>
 *{box-sizing:border-box}
 html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#04131e;color:#d9faff;font-family:"Microsoft YaHei","Noto Sans SC",Arial,sans-serif}
@@ -45,11 +45,11 @@ html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#04131e;col
 .top-btn.active,.top-btn:hover{background:rgba(0,205,210,.35);box-shadow:0 0 14px rgba(0,224,230,.28)}
 .clock{font-size:11px;color:#83cbd2;margin-left:10px;min-width:135px;text-align:right}
 .corner{position:absolute;z-index:2;top:78px;left:50%;transform:translateX(-50%);font-size:9px;letter-spacing:2px;color:#3295a7;text-shadow:0 0 8px #087b8e;white-space:nowrap}
-.panel{position:absolute;z-index:3;width:255px;background:linear-gradient(135deg,rgba(3,26,37,.93),rgba(3,18,29,.82));border:1px solid var(--line);box-shadow:0 0 20px rgba(0,207,222,.10),inset 0 0 22px rgba(0,150,170,.08);padding:12px 13px 11px;backdrop-filter:blur(8px)}
+.panel{position:absolute;z-index:3;width:248px;background:linear-gradient(135deg,rgba(3,26,37,.93),rgba(3,18,29,.82));border:1px solid var(--line);box-shadow:0 0 20px rgba(0,207,222,.10),inset 0 0 22px rgba(0,150,170,.08);padding:12px 13px 11px;backdrop-filter:blur(8px)}
 .panel:before,.panel:after{content:"";position:absolute;width:34px;height:2px;background:var(--cyan);box-shadow:0 0 8px var(--cyan)}
 .panel:before{left:-1px;top:-1px}.panel:after{right:-1px;bottom:-1px}
-.left{left:15px;top:94px;bottom:112px;overflow:auto;scrollbar-width:thin;scrollbar-color:#176477 transparent}
-.right{right:15px;top:94px;bottom:112px;overflow:auto;scrollbar-width:thin;scrollbar-color:#176477 transparent}
+.left{left:15px;top:88px;bottom:108px;overflow:auto;scrollbar-width:thin;scrollbar-color:#176477 transparent}
+.right{right:15px;top:88px;bottom:108px;overflow:auto;scrollbar-width:thin;scrollbar-color:#176477 transparent}
 .panel-title{font-size:14px;letter-spacing:1px;color:#b8faff;border-bottom:1px solid rgba(38,211,221,.32);padding:0 0 9px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center}
 .panel-title span{font-size:9px;color:#5bcbd3;letter-spacing:1px;font-weight:400}
 .section-label{font-size:10px;color:#57c8d1;margin:11px 0 7px;display:flex;align-items:center;gap:7px}
@@ -78,7 +78,7 @@ html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#04131e;col
 .cam-machine{position:absolute;bottom:19px;width:24%;height:53px;background:linear-gradient(135deg,#7298a3,#25495a);border:1px solid #9acbd2;box-shadow:0 0 12px rgba(0,220,230,.15)}
 .cam-machine:after{content:"";position:absolute;left:16%;right:16%;top:8px;height:27px;background:#092431;border:1px solid #45a4b3}
 .cam-label{position:absolute;top:7px;left:8px;font-size:8px;color:#ff6975}.cam-time{position:absolute;bottom:5px;right:8px;font-size:8px;color:#a5dce2}
-.bottom{position:absolute;z-index:4;left:15px;right:15px;bottom:12px;height:83px;display:grid;grid-template-columns:1.25fr 1fr 1fr 1fr 1.25fr;gap:8px}
+.bottom{position:absolute;z-index:4;left:15px;right:15px;bottom:10px;height:78px;display:grid;grid-template-columns:1.25fr 1fr 1fr 1fr 1.25fr;gap:8px}
 .bottom-card{background:linear-gradient(135deg,rgba(3,28,41,.94),rgba(4,22,34,.86));border:1px solid rgba(28,179,195,.38);padding:10px 12px;position:relative;box-shadow:0 0 12px rgba(0,180,200,.06)}
 .bottom-card label{display:block;color:#6dbbc4;font-size:9px;margin-bottom:7px}.bottom-card strong{font-size:20px;color:#d9ffff;font-weight:600}.bottom-card small{font-size:9px;color:#45c9d6;margin-left:4px}
 .bottom-card:first-child strong{font-size:19px}.bottom-card:last-child strong{color:#39e8b6}
@@ -101,7 +101,7 @@ html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#04131e;col
 <div id="app">
 <canvas id="scene"></canvas>
 <div class="topbar">
-  <div class="brand">智能制造课堂数字孪生平台<small>INTELLIGENT MANUFACTURING · CLASSROOM DIGITAL TWIN PLATFORM</small></div>
+  <div class="brand">课堂数字孪生平台<small>CLASSROOM DIGITAL TWIN · INTELLIGENT TRAINING CENTER</small></div>
   <div class="top-actions">
     <button class="top-btn" onclick="showPanel('overview')">实训总览</button>
     <button class="top-btn" onclick="showPanel('devices')">设备管理</button>
@@ -111,7 +111,7 @@ html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#04131e;col
     <div class="clock" id="clock"></div>
   </div>
 </div>
-<div class="corner">CLASSROOM 3D VISUALIZATION　/　智能制造实训室场景</div>
+<div class="corner">CLASSROOM 3D VISUALIZATION　/　智能制造实训教学空间</div>
 <div class="legend">HPY-RS03 恒佩优立式一体化实训控制台　·　3D DIGITAL TWIN</div>
 
 <div class="panel left">
@@ -198,30 +198,30 @@ renderer.shadowMap.enabled=true;
 renderer.shadowMap.type=THREE.PCFSoftShadowMap;
 renderer.outputColorSpace=THREE.SRGBColorSpace;
 renderer.toneMapping=THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure=1.12;
+renderer.toneMappingExposure=1.32;
 
 const scene=new THREE.Scene();
 scene.background=new THREE.Color(0x061724);
-scene.fog=new THREE.Fog(0x061724,35,85);
-const camera=new THREE.PerspectiveCamera(43,innerWidth/innerHeight,.1,150);
-camera.position.set(24,17,27);
+scene.fog=new THREE.Fog(0x061724,42,105);
+const camera=new THREE.PerspectiveCamera(39,innerWidth/innerHeight,.1,150);
+camera.position.set(18.5,11.8,24.5);
 const controls=new OrbitControls(camera,renderer.domElement);
-controls.target.set(0,2.1,0);
+controls.target.set(0,2.25,-0.4);
 controls.enableDamping=true;controls.dampingFactor=.055;
-controls.minDistance=15;controls.maxDistance=48;
-controls.maxPolarAngle=Math.PI*.48;
+controls.minDistance=12;controls.maxDistance=39;
+controls.maxPolarAngle=Math.PI*.46;
 controls.minPolarAngle=.18;
 controls.update();
-const defaultPos=new THREE.Vector3(24,17,27);
-const defaultTarget=new THREE.Vector3(0,2.1,0);
+const defaultPos=new THREE.Vector3(18.5,11.8,24.5);
+const defaultTarget=new THREE.Vector3(0,2.25,-0.4);
 
-scene.add(new THREE.HemisphereLight(0xb8eaff,0x162b37,2.0));
-const key=new THREE.DirectionalLight(0xe7f7ff,2.6);key.position.set(-12,24,15);key.castShadow=true;key.shadow.mapSize.set(2048,2048);key.shadow.camera.left=-24;key.shadow.camera.right=24;key.shadow.camera.top=24;key.shadow.camera.bottom=-24;scene.add(key);
-const cyanLight=new THREE.PointLight(0x00d9e8,38,38);cyanLight.position.set(-9,6,0);scene.add(cyanLight);
-const blueLight=new THREE.PointLight(0x087bff,25,32);blueLight.position.set(10,5,-8);scene.add(blueLight);
+scene.add(new THREE.HemisphereLight(0xc8f3ff,0x253b45,2.45));
+const key=new THREE.DirectionalLight(0xf1fbff,3.25);key.position.set(-12,24,15);key.castShadow=true;key.shadow.mapSize.set(2048,2048);key.shadow.camera.left=-24;key.shadow.camera.right=24;key.shadow.camera.top=24;key.shadow.camera.bottom=-24;scene.add(key);
+const cyanLight=new THREE.PointLight(0x00d9e8,52,46);cyanLight.position.set(-9,6,0);scene.add(cyanLight);
+const blueLight=new THREE.PointLight(0x168cff,34,40);blueLight.position.set(10,5,-8);scene.add(blueLight);
 
 const mat=(color,metalness=.25,roughness=.55,emissive=0x000000)=>new THREE.MeshStandardMaterial({color,metalness,roughness,emissive});
-const floorMat=mat(0x4b5c61,.08,.92);
+const floorMat=mat(0x687d83,.12,.78);
 const floor=new THREE.Mesh(new THREE.PlaneGeometry(34,25),floorMat);floor.rotation.x=-Math.PI/2;floor.position.y=-.08;floor.receiveShadow=true;scene.add(floor);
 const grid=new THREE.GridHelper(34,34,0x64818a,0x354f59);grid.position.y=-.055;scene.add(grid);
 const safety=mat(0xe3c34b,.12,.8);
@@ -230,7 +230,7 @@ function cylinder(parent,x,y,z,r1,r2,h,material,segments=24){const m=new THREE.M
 function line(parent,a,b,color=0x4b8290,r=.025){const d=new THREE.Vector3(...b).sub(new THREE.Vector3(...a));const m=new THREE.Mesh(new THREE.CylinderGeometry(r,r,d.length(),8),new THREE.MeshBasicMaterial({color}));m.position.copy(new THREE.Vector3(...a).add(new THREE.Vector3(...b)).multiplyScalar(.5));m.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),d.normalize());parent.add(m);return m;}
 
 // Room shell: walls, windows, door, ceiling beams and industrial lighting
-const wall=mat(0x183a4a,.18,.72), trim=mat(0x7899a2,.55,.45), glass=new THREE.MeshPhysicalMaterial({color:0x164d65,metalness:.2,roughness:.16,transparent:true,opacity:.62});
+const wall=mat(0x234958,.24,.62), trim=mat(0x9ab7bf,.62,.38), glass=new THREE.MeshPhysicalMaterial({color:0x28718a,metalness:.28,roughness:.12,transparent:true,opacity:.72});
 box(scene,0,3.35,-10.7,34,6.8,.28,wall);
 box(scene,-16.85,3.35,0,.28,6.8,21.6,wall);
 box(scene,16.85,3.35,0,.28,6.8,21.6,wall);
@@ -241,6 +241,12 @@ for(const x of [-11,-5,1,7]){
  box(scene,x,3.06,-10.44,4.85,.10,.12,trim);
  box(scene,x,4.15,-10.43,.10,2.25,.12,trim);
 }
+// Teaching display wall: large interactive board, side rails and status strip
+box(scene,-1.8,2.55,-10.43,7.4,2.45,.16,mat(0x0b202c,.45,.25),false);
+box(scene,-1.8,2.55,-10.32,7.08,2.12,.035,mat(0x102f40,.25,.2,0x062b3a),false);
+for(let i=0;i<7;i++)box(scene,-4.7+i*.88,3.18,-10.285,.62,.035,.018,mat(0x21c6d5,.1,.25,0x087e92),false);
+for(let i=0;i<4;i++)box(scene,-4.65,2.72-i*.28,-10.285,2.1-i*.25,.025,.018,mat(0x5b9eaa,.1,.35,0x092b38),false);
+box(scene,-1.8,1.28,-10.31,7.5,.08,.10,trim,false);
 // right rear entry door
 box(scene,14.9,1.55,-10.48,2.2,3.05,.12,mat(0x234b5b),false);
 box(scene,14.25,1.55,-10.38,.08,2.6,.08,trim,false);
@@ -253,17 +259,24 @@ box(scene,-12,5.95,-1,1.0,.62,18,mat(0x526f79,.65,.5));
 for(const z of [-7,-2,3,8]){box(scene,-12,5.55,z,.52,.62,.52,trim);}
 // LED fixtures
 for(const x of [-10,-3,4,11])for(const z of [-6,2,8]){
- box(scene,x,6.13,z,2.5,.12,.34,mat(0xa9d6df,.25,.3,0x153c49),false);
- const lamp=new THREE.PointLight(0x9cefff,4.5,7);lamp.position.set(x,5.85,z);scene.add(lamp);
+ box(scene,x,6.13,z,3.2,.13,.48,mat(0xd7f6fa,.18,.22,0x2c7788),false);
+ const lamp=new THREE.PointLight(0xb8f5ff,7.5,10);lamp.position.set(x,5.85,z);scene.add(lamp);
 }
 // Yellow walkway and station outlines
 for(const x of [-14,14])box(scene,x,.015,0,.10,.025,19,safety,false);
 box(scene,0,.018,9,27,.025,.10,safety,false);
 box(scene,0,.018,-8.9,27,.025,.10,safety,false);
 for(const x of [-11,-6,-1,4,9])box(scene,x,.02,0,.045,.025,16,safety,false);
+// Individual machine work bays, aisle arrows and floor reflectors
+for(const x of [-9,-3,3,9]){
+ box(scene,x,.028,-4.8,3.25,.028,2.45,mat(0x78969b,.1,.8),false);
+ box(scene,x,.035,-6.05,2.7,.025,.045,safety,false);
+ box(scene,x,.035,-3.55,2.7,.025,.045,safety,false);
+}
+for(const z of [6.5,7.2])box(scene,0,.028,z,25,.025,.035,safety,false);
 
 // Console materials and equipment groups
-const cabinet=mat(0x91aab0,.58,.42), cabinetDark=mat(0x3c5965,.6,.42), black=mat(0x111f28,.35,.4), screenMat=new THREE.MeshStandardMaterial({color:0x061a27,emissive:0x087a94,emissiveIntensity:.55,metalness:.2,roughness:.22}), keyMat=mat(0xc3dce0,.35,.32), red=mat(0xf0444e,.2,.3,0x5b1016), green=mat(0x24e6a5,.1,.25,0x08754d), amber=mat(0xffbf4b,.1,.25,0x7b4a0a);
+const cabinet=mat(0xa9bec3,.66,.31), cabinetDark=mat(0x344f5b,.72,.30), black=mat(0x101d26,.52,.32), screenMat=new THREE.MeshStandardMaterial({color:0x061a27,emissive:0x079bb7,emissiveIntensity:.82,metalness:.25,roughness:.16}), keyMat=mat(0xd5e4e6,.42,.26), red=mat(0xf0444e,.18,.24,0x79151c), green=mat(0x24e6a5,.12,.2,0x08754d), amber=mat(0xffbf4b,.12,.22,0x7b4a0a);
 const stations=[];
 function makeConsole(x,z,index){
  const g=new THREE.Group();g.position.set(x,0,z);scene.add(g);
@@ -276,13 +289,19 @@ function makeConsole(x,z,index){
  box(g,-.28,1.53,.835,1.12,1.36,.025,glass,false);
  line(g,[-.28,0.62,.86],[-.28,2.22,.86],0x9bbbc4,.018);
  box(g,.45,1.32,.845,.055,.30,.05,keyMat);
- // lower cooling vents
- for(let i=0;i<6;i++)box(g,-.65+i*.17,0.48,.84,.09,.035,.025,black,false);
+ // lower cooling vents and industrial door hardware
+ for(let i=0;i<8;i++)box(g,-.68+i*.17,0.48,.84,.095,.035,.025,black,false);
+ box(g,-.28,.43,.86,1.45,.10,.055,cabinetDark,false);
+ // door hinge blocks and recessed inspection handle
+ for(const yy of [.78,1.98])box(g,-.91,yy,.86,.07,.20,.07,trim,false);
+ box(g,.36,1.43,.875,.07,.42,.035,black,false);
  // raised operator panel / sloped console shoulder
  const panel=box(g,.72,1.86,.80,.78,1.22,.20,black);panel.rotation.x=-.12;
- const monitor=box(g,.70,2.16,.925,.61,.48,.035,screenMat,false);
- // tiny screen graphics
- for(let i=0;i<3;i++)box(g,.49+i*.17,2.18,.951,.10,.018,.008,mat([0x22dce8,0x27b5d0,0x54e5b5][i],0,.3,.15),false);
+ box(g,.70,2.16,.91,.72,.58,.07,trim,false);
+ const monitor=box(g,.70,2.16,.953,.62,.46,.025,screenMat,false);
+ // CNC monitor status graphics
+ for(let i=0;i<4;i++)box(g,.48+i*.145,2.29,.972,.095,.018,.008,mat([0x22dce8,0x27b5d0,0x54e5b5,0xffc45a][i],0,.3,.25),false);
+ for(let i=0;i<3;i++)box(g,.52,2.17-i*.075,.972,.07,.012,.008,mat(0x56b9c9,0,.4,.12),false);
  // keypad surface
  box(g,.72,1.55,.94,.66,.40,.10,black);
  for(let r=0;r<3;r++)for(let c=0;c<4;c++){
@@ -325,8 +344,15 @@ function makeChair(x,z){
  box(g,0,.96,-.24,.58,.68,.13,mat(0x416f7e));
  for(const xx of [-.22,.22])for(const zz of [-.22,.22])box(g,xx,.29,zz,.055,.55,.055,trim);
 }
-makeDesk(-12,1);makeDesk(12,1);makeDesk(-12,-4);
-[[-12,2.2],[-10.3,2.2],[10.3,2.2],[12,2.2],[-12,-2.3],[12,-2.3]].forEach(p=>makeChair(...p));
+makeDesk(-12,1);makeDesk(12,1);makeDesk(-12,-4);makeDesk(12,-4);
+[[-12,2.2],[-10.3,2.2],[10.3,2.2],[12,2.2],[-12,-2.3],[12,-2.3],[-12,-5.5],[12,-5.5]].forEach(p=>makeChair(...p));
+// student terminal keyboards, desktop lamps and stools
+for(const [x,z] of [[-12,1],[12,1],[-12,-4],[12,-4]]){
+ box(scene,x,1.12,z+.23,.72,.045,.28,mat(0x172d38,.45,.35),false);
+ for(let k=0;k<5;k++)box(scene,x-.27+k*.135,1.15,z+.23,.09,.018,.13,mat(0x6d8990,.35,.4),false);
+ cylinder(scene,x+.72,1.28,z-.25,.055,.055,.34,trim,12);
+ const glow=new THREE.PointLight(0x39cfe0,1.2,2);glow.position.set(x+.72,1.55,z-.25);scene.add(glow);
+}
 // teacher podium
 box(scene,-13,.72,7,2.6,1.4,1.5,mat(0x3d6675));box(scene,-13,1.65,6.6,1.0,.65,.12,black);box(scene,-13,1.65,6.53,.88,.52,.025,screenMat,false);
 // CCTV cameras with bracket and lens
@@ -341,11 +367,13 @@ makeCCTV(-15,-9,.6);makeCCTV(15,-9,2.5);makeCCTV(-15,9,-.6);makeCCTV(15,9,-2.5);
 // Human silhouettes for classroom scale
 function makePerson(x,z,shirt=0x286b87){
  const g=new THREE.Group();g.position.set(x,0,z);scene.add(g);
- const body= new THREE.Mesh(new THREE.CapsuleGeometry(.22,.62,5,10),mat(shirt,.1,.75));body.position.y=1.05;body.castShadow=true;g.add(body);
- const head=new THREE.Mesh(new THREE.SphereGeometry(.17,16,12),mat(0xd7b99e,.05,.8));head.position.y=1.58;g.add(head);
+ const body= new THREE.Mesh(new THREE.CapsuleGeometry(.24,.66,6,12),mat(shirt,.18,.58));body.position.y=1.08;body.castShadow=true;g.add(body);
+ const vest=box(g,0,1.10,.205,.30,.55,.035,mat(0xd7b94e,.1,.65),false);vest.rotation.z=.02;
+ const head=new THREE.Mesh(new THREE.SphereGeometry(.17,20,16),mat(0xe0c3a7,.05,.72));head.position.y=1.62;g.add(head);
+ const neck=cylinder(g,0,1.43,0,.075,.075,.13,mat(0xb88f76),14);
  const helmet=new THREE.Mesh(new THREE.SphereGeometry(.20,16,10,0,Math.PI*2,0,Math.PI/2),amber);helmet.position.y=1.72;g.add(helmet);
- for(const dx of [-.11,.11]){line(g,[dx,.72,0],[dx*1.25,.12,.02],0x1b2e39,.055);line(g,[dx,.12,.02],[dx*1.7,.07,.12],0x101d25,.06);}
- for(const dx of [-.24,.24])line(g,[dx,.32,0],[dx*1.4,1.12,.04],shirt,.065);
+ for(const dx of [-.11,.11]){line(g,[dx,.72,0],[dx*1.25,.12,.02],0x263b45,.065);line(g,[dx,.12,.02],[dx*1.7,.07,.12],0x101d25,.075);}
+ for(const dx of [-.24,.24]){line(g,[dx,.32,0],[dx*1.4,1.12,.04],shirt,.07);cylinder(g,dx*1.4,1.12,.04,.07,.07,.12,mat(0xe0c3a7),12); }
  return g;
 }
 const people=[makePerson(-10,-1.2),makePerson(10,-1.5,0x6a596f),makePerson(-13,4,0x326e63)];
@@ -389,4 +417,4 @@ setInterval(()=>{const rpm=3200+Math.floor(Math.random()*45-22),load=66+Math.flo
 </body>
 </html>
 """
-components.html(html, height=1000, scrolling=False)
+components.html(html, height=960, scrolling=False)
