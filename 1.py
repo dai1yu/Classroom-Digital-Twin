@@ -103,110 +103,176 @@ st.markdown("<div style='height:7px'></div>", unsafe_allow_html=True)
 scene_html = r"""
 <!DOCTYPE html><html><head><meta charset="utf-8">
 <style>
-*{box-sizing:border-box}body{margin:0;background:#020b16;color:#eaf7ff;font-family:Arial,"Microsoft YaHei",sans-serif;overflow:hidden}
-#wrap{position:relative;width:100%;height:780px;background:radial-gradient(ellipse at center,#102b45,#020914 75%);border:1px solid #17649a;border-radius:8px;overflow:hidden}
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#020916;color:#eaf7ff;font-family:"Microsoft YaHei",Arial,sans-serif}
+#wrap{position:relative;width:100%;height:780px;overflow:hidden;border:1px solid rgba(38,165,255,.7);border-radius:7px;background:radial-gradient(ellipse at 50% 44%,#163b5b 0%,#07192b 56%,#020814 100%);box-shadow:inset 0 0 55px #0876bd33,0 0 22px #008bff22}
 #view{width:100%;height:100%;display:block}
-.hud{position:absolute;z-index:3;pointer-events:none;text-shadow:0 1px 4px #000}
-.hud.top{left:16px;top:13px;font-size:13px;color:#9edcff;letter-spacing:2px}
-.hud.tip{right:15px;top:13px;font-size:11px;color:#83b8d8}
-#info{position:absolute;left:16px;bottom:16px;z-index:4;width:245px;padding:12px;background:rgba(3,21,39,.88);border:1px solid #168bc7;border-radius:6px;box-shadow:0 0 18px #0068a655}
-#info strong{color:#55d8ff;font-size:14px}#info p{font-size:12px;color:#c3dff2;margin:7px 0 0}
-#tools{position:absolute;right:13px;bottom:14px;z-index:5;display:flex;gap:7px;flex-wrap:wrap;justify-content:flex-end}
-#tools button{pointer-events:auto;background:rgba(4,48,78,.92);border:1px solid #168bc7;color:#dff6ff;padding:8px 11px;border-radius:4px;cursor:pointer;font-size:12px}
-#tools button:hover{background:#087bb4}
-#legend{position:absolute;left:16px;top:45px;z-index:3;font-size:11px;color:#a8d4ee;line-height:1.9}
-.dot{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:5px;background:#31e0b0}
+.hud{position:absolute;z-index:4;pointer-events:none;text-shadow:0 2px 6px #000}
+.hud.top{left:17px;top:14px;color:#8cddff;font-size:13px;letter-spacing:2px}
+.hud.tip{right:16px;top:14px;color:#a4cde8;font-size:11px}
+#legend{position:absolute;left:17px;top:43px;font-size:11px;color:#c1e6ff;line-height:2}
+.pulse{display:inline-block;width:7px;height:7px;border-radius:50%;background:#36edb6;box-shadow:0 0 9px #36edb6;margin-right:6px}
+#info{position:absolute;left:16px;bottom:16px;z-index:5;width:258px;min-height:98px;padding:12px 14px;background:linear-gradient(135deg,rgba(3,27,49,.94),rgba(3,12,25,.92));border:1px solid #168bc7;border-left:3px solid #26c5ff;border-radius:5px;box-shadow:0 0 20px #0068a655}
+#info strong{color:#5bd8ff;font-size:14px}
+#info p{font-size:11px;line-height:1.8;color:#d0e9fa;margin:7px 0 0}
+#tools{position:absolute;right:13px;bottom:14px;z-index:6;display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+#tools button{background:rgba(4,43,73,.94);border:1px solid #168bc7;color:#e1f6ff;padding:8px 11px;border-radius:4px;cursor:pointer;font-size:11px}
+#tools button:hover{background:#087bb4;box-shadow:0 0 12px #16aaff77}
+#scan{position:absolute;inset:0;pointer-events:none;z-index:2;background:repeating-linear-gradient(0deg,transparent 0px,transparent 5px,rgba(65,174,255,.025) 6px)}
 </style></head><body>
 <div id="wrap">
-<canvas id="view"></canvas>
-<div class="hud top">● DIGITAL TWIN / LIVE CLASSROOM</div>
-<div class="hud tip">鼠标拖动旋转 · 滚轮缩放 · 点击设备查看详情</div>
-<div id="legend"><span class="dot"></span>在线设备　<span style="color:#ffc65c">●</span> 待检设备　<span style="color:#42aaff">●</span> 学生位置</div>
-<div id="info"><strong id="infoTitle">课堂三维实景</strong><p id="infoText">点击中央白色立式实训控制台、学生或教师模型，查看对象信息。</p></div>
+<canvas id="view"></canvas><div id="scan"></div>
+<div class="hud top"><span class="pulse"></span>CLASSROOM DIGITAL TWIN / LIVE SCENE</div>
+<div class="hud tip">拖动旋转 · 滚轮缩放 · 点击模型查看孪生数据</div>
+<div id="legend">● 设备在线　<span style="color:#ffc65c">●</span> 待检设备　<span style="color:#42aaff">●</span> 学生　<span style="color:#ff9d62">●</span> 教师</div>
+<div id="info"><strong id="infoTitle">三维教室数字孪生</strong><p id="infoText">场景已加载。点击立式一体化实训控制台、学生或教师模型，查看对象状态、位置及任务信息。</p></div>
 <div id="tools">
-<button onclick="setMode('all')">全景</button><button onclick="setMode('devices')">设备视角</button>
-<button onclick="setMode('people')">人员视角</button><button onclick="resetCamera()">复位视角</button>
+<button onclick="setMode('all')">教室全景</button><button onclick="setMode('devices')">设备视角</button>
+<button onclick="setMode('people')">人员视角</button><button onclick="setMode('top')">俯视视角</button><button onclick="resetCamera()">视角复位</button>
 </div></div>
 <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
 <script>
-const canvas=document.getElementById('view'), wrap=document.getElementById('wrap');
+const canvas=document.getElementById('view'),wrap=document.getElementById('wrap');
 const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true});
-renderer.setPixelRatio(Math.min(devicePixelRatio,2)); renderer.shadowMap.enabled=true;
-renderer.setSize(wrap.clientWidth,wrap.clientHeight);
-renderer.outputColorSpace=THREE.SRGBColorSpace;
-const scene=new THREE.Scene(); scene.background=new THREE.Color(0x061321); scene.fog=new THREE.Fog(0x061321,22,55);
-const camera=new THREE.PerspectiveCamera(48,wrap.clientWidth/wrap.clientHeight,.1,100);
-let target=new THREE.Vector3(0,2,0), radius=23, theta=.18, phi=1.05;
+renderer.setPixelRatio(Math.min(devicePixelRatio,1.8));renderer.setSize(wrap.clientWidth,wrap.clientHeight);
+renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.shadowMap.enabled=true;
+renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+const scene=new THREE.Scene();scene.background=new THREE.Color(0x061525);scene.fog=new THREE.Fog(0x061525,28,62);
+const camera=new THREE.PerspectiveCamera(43,wrap.clientWidth/wrap.clientHeight,.1,120);
+let target=new THREE.Vector3(0,2.1,-1),radius=28,theta=.18,phi=1.12;
 function updateCamera(){camera.position.set(target.x+radius*Math.sin(phi)*Math.sin(theta),target.y+radius*Math.cos(phi),target.z+radius*Math.sin(phi)*Math.cos(theta));camera.lookAt(target)}
 updateCamera();
-scene.add(new THREE.HemisphereLight(0x9fdcff,0x172333,2.0));
-const key=new THREE.DirectionalLight(0xffffff,2.2);key.position.set(-8,16,10);key.castShadow=true;scene.add(key);
-const blue=new THREE.PointLight(0x168cff,32,35);blue.position.set(0,8,-5);scene.add(blue);
-function mat(color,rough=.7,metal=0){return new THREE.MeshStandardMaterial({color,roughness:rough,metalness:metal})}
-function box(w,h,d,x,y,z,m, parent=scene){let o=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),m);o.position.set(x,y,z);o.castShadow=true;o.receiveShadow=true;parent.add(o);return o}
-const floor=box(24,.35,30,0,-.25,0,mat(0x26384a));
-const grid=new THREE.GridHelper(24,24,0x1b78a8,0x24465e);grid.position.y=-.06;scene.add(grid);
-// 房间墙体、窗户和后墙
-box(24,8,.35,0,3.8,-14.8,mat(0x34495b));box(.35,8,30,-12,3.8,0,mat(0x25394c));box(.35,8,30,12,3.8,0,mat(0x25394c));
-for(let i=0;i<5;i++){box(2.2,1.65,.12,-9.6+i*4.7,4.5,-14.58,mat(0x75b9df,.25,.2));box(2.25,.08,.16,-9.6+i*4.7,3.65,-14.5,mat(0x9ab9cc));}
-// 顶部灯带
-for(let x of [-7,0,7]){box(.16,.08,22,x,7.65,0,mat(0x38bfff,.25,0.2));}
-// 讲台
-box(5,.35,1.5,0,.2,-11,mat(0x40556b));box(2.6,1.2,.35,0,.95,-11.55,mat(0x172c40));
-// 设备对象可点击
-const clickable=[];
-function label(text,obj){const c=document.createElement('canvas');c.width=512;c.height=100;const ctx=c.getContext('2d');ctx.fillStyle='rgba(3,25,45,.85)';ctx.fillRect(0,0,512,100);ctx.strokeStyle='#29bfff';ctx.lineWidth=4;ctx.strokeRect(2,2,508,96);ctx.fillStyle='#dff7ff';ctx.font='bold 38px Arial';ctx.fillText(text,20,65);const tex=new THREE.CanvasTexture(c);const s=new THREE.Sprite(new THREE.SpriteMaterial({map:tex,transparent:true}));s.scale.set(3.2,.62,1);s.position.set(obj.position.x, obj.position.y+2.6,obj.position.z);scene.add(s);}
+scene.add(new THREE.HemisphereLight(0xc4eaff,0x142337,2.0));
+const key=new THREE.DirectionalLight(0xffffff,2.4);key.position.set(-10,18,10);key.castShadow=true;key.shadow.mapSize.set(2048,2048);scene.add(key);
+const rim=new THREE.PointLight(0x168dff,42,42);rim.position.set(0,8,-7);scene.add(rim);
+const fill=new THREE.PointLight(0x28c9ff,24,30);fill.position.set(8,5,8);scene.add(fill);
+function mat(color,rough=.62,metal=0,emissive=0x000000){return new THREE.MeshStandardMaterial({color,roughness:rough,metalness:metal,emissive,emissiveIntensity:.35})}
+function box(w,h,d,x,y,z,m,parent=scene){const o=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),m);o.position.set(x,y,z);o.castShadow=true;o.receiveShadow=true;parent.add(o);return o}
+function cylinder(rt,rb,h,x,y,z,m,parent=scene){const o=new THREE.Mesh(new THREE.CylinderGeometry(rt,rb,h,20),m);o.position.set(x,y,z);o.castShadow=true;parent.add(o);return o}
+const floorMat=mat(0x26384a,.88),wallMat=mat(0x526273,.9),trim=mat(0x1b9bd2,.32,.35,0x063c65);
+box(26,.32,34,0,-.22,0,floorMat);
+const floorGrid=new THREE.GridHelper(26,52,0x1688bc,0x31536c);floorGrid.position.y=-.045;scene.add(floorGrid);
+// 房间墙体：后墙、左右墙和蓝色踢脚线
+box(26,8,.35,0,3.8,-17,wallMat);box(.35,8,34,-13,3.8,0,mat(0x354b5f));box(.35,8,34,13,3.8,0,mat(0x354b5f));
+box(26,.12,.16,0,.16,-16.78,trim);box(.16,.12,34,-12.78,.16,0,trim);box(.16,.12,34,12.78,.16,0,trim);
+// 后墙窗户、窗框和顶灯
+for(let i=0;i<6;i++){let x=-10.4+i*4.15;box(2.65,1.8,.07,x,4.8,-16.78,mat(0x75b7d7,.22,.25,0x102c45));box(2.75,.09,.12,x,3.86,-16.68,mat(0x9eb5c4));box(.08,1.9,.12,x-1.34,4.8,-16.65,trim);box(.08,1.9,.12,x+1.34,4.8,-16.65,trim)}
+for(let x of [-8,0,8]){box(.22,.08,24,x,7.55,-1,mat(0x43c8ff,.2,.2,0x0879c5));}
+for(let z of [-10,-2,6]){box(18,.04,.05,0,7.25,z,mat(0x2e9bc9,.3,.2,0x073e66));}
+// 前方教学区与讲台
+box(7,.28,1.7,0,.15,-13.6,mat(0x536b7d));box(3.2,1.25,.35,0,.9,-14.25,mat(0x14283b));
+box(2.5,1.35,.08,0,1.9,-14.32,mat(0x071b2e));box(2.35,1.18,.025,0,1.9,-14.25,mat(0x0b3450,.2,.2,0x0b5a86));
+// 场景对象和可点击对象
+const clickable=[],animated=[];
+function makeTag(text,position,color='#25bfff'){
+ const c=document.createElement('canvas');c.width=512;c.height=112;const ctx=c.getContext('2d');
+ ctx.fillStyle='rgba(3,22,42,.91)';ctx.fillRect(0,0,512,112);ctx.strokeStyle=color;ctx.lineWidth=5;ctx.strokeRect(3,3,506,106);
+ ctx.fillStyle='#e8f8ff';ctx.font='bold 39px Arial,"Microsoft YaHei"';ctx.fillText(text,20,72);
+ const tex=new THREE.CanvasTexture(c),sp=new THREE.Sprite(new THREE.SpriteMaterial({map:tex,transparent:true,depthTest:false}));
+ sp.scale.set(3.6,.78,1);sp.position.copy(position);scene.add(sp);return sp;
+}
+function addRing(parent,y,r,color){const ring=new THREE.Mesh(new THREE.TorusGeometry(r,.018,8,64),new THREE.MeshBasicMaterial({color,transparent:true,opacity:.85}));ring.rotation.x=Math.PI/2;ring.position.y=y;parent.add(ring);return ring}
+// 立式一体化实训控制台：白色立式机身、上置大屏、操作台、按钮、键盘、侧面通风口和脚轮
 function makeConsole(x,z,index){
- const g=new THREE.Group();g.position.set(x,0,z);scene.add(g);
- const white=mat(0xe8edf0,.48),dark=mat(0x111c29,.35,.15),screen=mat(0x071d32,.2,.2),silver=mat(0x8798a5,.35,.55);
- // 宽底座和立式柜体
- let base=box(1.8,.18,1.15,0,.22,0,white,g);
- box(1.15,2.65,.85,0,1.58,0,white,g);
- // 上部倾斜控制面板、显示器、操作台
- let panel=box(1.03,1.0,.12,0,2.9,-.40,dark,g);panel.rotation.x=-.12;
- box(.91,.72,.035,0,2.95,-.475,screen,g);
- box(1.42,.18,.82,0,2.35,.05,white,g);
- box(1.25,.10,.55,0,2.48,.04,dark,g);
- for(let i=0;i<5;i++){let b=new THREE.Mesh(new THREE.CylinderGeometry(.07,.07,.05,20),i===0?mat(0xe63939):silver);b.rotation.x=Math.PI/2;b.position.set(-.48+i*.23,2.55,-.24);g.add(b)}
- box(.46,.08,.02,0,1.0,-.438,silver,g);
- // 侧边通风口
- for(let i=0;i<5;i++)box(.56,.035,.018,0,.62+i*.09,-.437,silver,g);
- // 轮子
- for(let xx of [-.62,.62])for(let zz of [-.36,.36]){let w=new THREE.Mesh(new THREE.CylinderGeometry(.09,.09,.07,16),dark);w.rotation.z=Math.PI/2;w.position.set(xx,.12,zz);g.add(w)}
- clickable.push({obj:g,title:'立式一体化实训控制台 '+String(index).padStart(2,'0'),text:'设备型号：HPY-RS03 智能制造综合实训平台\\n运行状态：在线\\n当前任务：综合实训操作\\n设备位置：'+(index)+'号实训工位'});
- label('实训控制台 '+index,g);
+ const g=new THREE.Group();g.position.set(x,0,z);g.rotation.y=Math.PI;scene.add(g);
+ const white=mat(0xe9eef1,.42,.08),edge=mat(0xb8c7d0,.38,.25),black=mat(0x101b27,.28,.22),screenMat=new THREE.MeshStandardMaterial({color:0x061827,roughness:.18,metalness:.22,emissive:0x07304a,emissiveIntensity:.8}),silver=mat(0x8496a4,.3,.65);
+ // 底盘与主机立柱
+ box(1.95,.18,1.22,0,.22,0,white,g);box(1.78,.08,1.08,0,.12,0,edge,g);
+ box(1.32,2.25,.94,0,1.38,.02,white,g);
+ // 前面机身装饰面板
+ box(1.16,1.72,.035,0,1.48,-.465,white,g);
+ // 大尺寸上部显示屏与外框
+ box(1.38,1.12,.15,0,2.92,-.43,black,g);
+ box(1.22,.91,.035,0,2.94,-.525,screenMat,g);
+ // 屏幕数字界面细节
+ for(let j=0;j<4;j++){box(.78,.025,.008,0,3.22-j*.15,-.545,mat(0x27aee7,.3,.1,0x0879c5),g)}
+ // 倾斜操作台
+ let deck=box(1.72,.18,.88,0,2.22,.03,white,g);deck.rotation.x=-.08;
+ let control=box(1.48,.08,.64,0,2.34,-.02,black,g);control.rotation.x=-.08;
+ // 操作按钮、旋钮和急停按钮
+ for(let i=0;i<6;i++){let bx=-.57+(i%3)*.28,by=2.39-Math.floor(i/3)*.19;let b=cylinder(.065,.065,.045,bx,by,-.27,i===0?mat(0xe43c39,.3,0,0x9b100c):silver,g);b.rotation.x=Math.PI/2}
+ let stop=cylinder(.105,.105,.08,-.52,2.46,-.19,mat(0xf02c25,.25,0,0x7e0905),g);stop.rotation.x=Math.PI/2;
+ // 键盘托板与键盘
+ box(1.35,.055,.48,0,1.96,.55,edge,g);box(1.12,.055,.34,0,2.02,.55,black,g);
+ for(let r=0;r<3;r++)for(let c=0;c<13;c++)box(.065,.018,.055,-.48+c*.08,2.06,.42+r*.085,silver,g);
+ // 下部散热格栅
+ for(let i=0;i<7;i++)box(.62,.025,.018,0,.62+i*.09,-.49,silver,g);
+ // 侧面立柱和透明线缆软管
+ box(.055,1.5,.06,.69,1.15,.49,edge,g);
+ // 脚轮
+ for(let xx of [-.72,.72])for(let zz of [-.42,.42]){let w=cylinder(.095,.095,.09,xx,.10,zz,black,g);w.rotation.z=Math.PI/2}
+ const halo=addRing(g,.035,1.12,index===3?0xffbd52:0x27dfff);
+ const data={obj:g,title:'立式一体化实训控制台 '+String(index).padStart(2,'0'),text:'设备型号：HPY-RS03 智能制造综合实训平台\\n设备类型：立式一体化实训控制台\\n运行状态：'+(index===3?'待巡检':'在线运行')+'\\n当前任务：智能制造综合实训\\n设备工位：'+index+'号工位\\n连接状态：数字孪生已连接'};
+ clickable.push(data);makeTag('实训控制台 '+index,new THREE.Vector3(x,4.35,z),index===3?'#ffbd52':'#25bfff');
+ animated.push({obj:halo,phase:index*.7});
  return g;
 }
-let consoleObjs=[];
-for(let row=0;row<2;row++)for(let col=0;col<3;col++){let x=-7+col*7,z=3+row*-7;consoleObjs.push(makeConsole(x,z,row*3+col+1));}
-// 工位桌椅
-for(let row=0;row<3;row++)for(let col=0;col<4;col++){let x=-9+col*6,z=7-row*5;box(2.3,.16,1.25,x,.85,z,mat(0x40566b));box(.12,.8,.12,x-.9,.4,z-.48,mat(0x24394c));box(.12,.8,.12,x+.9,.4,z-.48,mat(0x24394c));}
-// 人物简模
+let consoles=[];
+const positions=[[-8,5],[-2.7,5],[2.7,5],[8,5],[-5.3,-3],[0,-3],[5.3,-3]];
+positions.forEach((p,i)=>consoles.push(makeConsole(p[0],p[1],i+1)));
+// 工位桌、显示器与椅子
+const deskMat=mat(0x40566b),chairMat=mat(0x233c52);
+for(let row=0;row<3;row++)for(let col=0;col<4;col++){
+ const x=-9+col*6,z=9-row*5.2;
+ box(2.15,.15,1.25,x,.86,z,deskMat);
+ for(let xx of [-.88,.88])for(let zz of [-.48,.48])box(.1,.82,.1,x+xx,.4,z+zz,chairMat);
+ box(.72,.5,.08,x,.0+1.2,z-.48,mat(0x142c43),scene);
+ box(.64,.4,.025,x,1.22,z-.425,mat(0x071d32,.2,.2,0x073c60),scene);
+}
+// 人员三维模型，衣服、头部、手臂、腿部和脚
 function person(x,z,isTeacher=false,n=0){
  const g=new THREE.Group();g.position.set(x,0,z);scene.add(g);
- let shirt=mat(isTeacher?0x20a9db:0x2787c8),skin=mat(0xe0b99a),pants=mat(0x1d2c42);
- let body=new THREE.Mesh(new THREE.CylinderGeometry(.25,.32,.9,12),shirt);body.position.y=1.05;g.add(body);
- let head=new THREE.Mesh(new THREE.SphereGeometry(.23,16,12),skin);head.position.y=1.72;g.add(head);
- for(let dx of [-.13,.13]){let leg=box(.16,.65,.18,dx,.32,0,pants,g)}
- clickable.push({obj:g,title:isTeacher?'授课教师':'学生 '+String(n).padStart(2,'0'),text:isTeacher?'教师状态：正在授课\\n负责课程：智能制造综合实训\\n当前位置：讲台区域':'学生状态：实训中\\n考勤状态：已签到\\n当前任务：设备操作训练'});
+ const shirt=mat(isTeacher?0xe18a42:0x238bc5),skin=mat(0xe4b99a),pants=mat(0x1b2c40),shoe=mat(0x101b29);
+ let torso=new THREE.Mesh(new THREE.CapsuleGeometry(.27,.52,5,10),shirt);torso.position.y=1.18;g.add(torso);
+ let head=new THREE.Mesh(new THREE.SphereGeometry(.22,16,12),skin);head.position.y=1.82;g.add(head);
+ let hair=new THREE.Mesh(new THREE.SphereGeometry(.225,16,8,0,Math.PI*2,0,Math.PI*.52),mat(0x20252b));hair.position.y=1.9;g.add(hair);
+ for(let side of [-1,1]){
+  let arm=new THREE.Mesh(new THREE.CapsuleGeometry(.075,.48,4,8),shirt);arm.position.set(side*.32,1.22,-.01);arm.rotation.z=side*.22;g.add(arm);
+  let leg=new THREE.Mesh(new THREE.CapsuleGeometry(.09,.48,4,8),pants);leg.position.set(side*.12,.43,0);g.add(leg);
+  box(.18,.1,.29,side*.12,.12,-.035,shoe,g);
+ }
+ const title=isTeacher?'授课教师':'学生 '+String(n).padStart(2,'0');
+ clickable.push({obj:g,title,text:isTeacher?'人员类型：授课教师\\n当前状态：正在授课\\n负责课程：智能制造综合实训\\n所在位置：教师讲台':'人员类型：实训学生\\n学号：STU-'+String(240100+n)+'\\n考勤状态：已签到\\n当前状态：设备操作训练\\n所在位置：'+(n)+'号学习工位'});
+ if(isTeacher)makeTag('授课教师',new THREE.Vector3(x,2.8,z),'#ff9d62');
  return g;
 }
-person(-1,-10,true);let people=[];for(let i=0;i<12;i++)people.push(person(-8+(i%4)*5.2,5-Math.floor(i/4)*4,false,i+1));
-// 点选与拖动
-const ray=new THREE.Raycaster(),mouse=new THREE.Vector2();let down=false,px=0,py=0;
-canvas.addEventListener('pointerdown',e=>{down=true;px=e.clientX;py=e.clientY;canvas.setPointerCapture(e.pointerId)});
-canvas.addEventListener('pointerup',e=>{down=false;});
-canvas.addEventListener('pointermove',e=>{if(!down)return;let dx=e.clientX-px,dy=e.clientY-py;px=e.clientX;py=e.clientY;theta-=dx*.006;phi=Math.max(.25,Math.min(1.48,phi+dy*.005));updateCamera()});
-canvas.addEventListener('wheel',e=>{radius=Math.max(11,Math.min(36,radius+e.deltaY*.015));updateCamera()},{passive:true});
-canvas.addEventListener('click',e=>{let r=canvas.getBoundingClientRect();mouse.x=((e.clientX-r.left)/r.width)*2-1;mouse.y=-((e.clientY-r.top)/r.height)*2+1;ray.setFromCamera(mouse,camera);let hits=ray.intersectObjects(clickable.map(x=>x.obj),true);if(hits.length){let root=hits[0].object;while(root.parent&&!clickable.some(x=>x.obj===root))root=root.parent;let d=clickable.find(x=>x.obj===root);if(d){document.getElementById('infoTitle').textContent=d.title;document.getElementById('infoText').innerHTML=d.text.replaceAll('\\n','<br>')}}});
-window.setMode=function(mode){if(mode==='devices'){target.set(0,1.8,0);radius=17;theta=.2;phi=1.1}else if(mode==='people'){target.set(0,1.2,1);radius=20;theta=-.2;phi=.9}else{target.set(0,2,0);radius=23;theta=.18;phi=1.05}updateCamera()};
+person(-1,-11.6,true);let students=[];
+for(let i=0;i<16;i++){let row=Math.floor(i/4),col=i%4;students.push(person(-8.5+col*5.6,8-row*4.7,false,i+1));}
+// 工位定位点、地面路径和动态数据流线
+const pathMat=new THREE.MeshBasicMaterial({color:0x148dcc,transparent:true,opacity:.65});
+for(let i=0;i<4;i++){let line=box(.08,.018,17,-10+i*6.7,.0,-1,pathMat);line.material=pathMat}
+for(let i=0;i<12;i++){let marker=new THREE.Mesh(new THREE.CircleGeometry(.12,20),new THREE.MeshBasicMaterial({color:0x28caff,transparent:true,opacity:.6}));marker.rotation.x=-Math.PI/2;marker.position.set(-9+(i%4)*6,0.015,8-Math.floor(i/4)*5);scene.add(marker);}
+// 点选、旋转、缩放
+const ray=new THREE.Raycaster(),mouse=new THREE.Vector2();let down=false,px=0,py=0,moved=false;
+canvas.addEventListener('pointerdown',e=>{down=true;moved=false;px=e.clientX;py=e.clientY;canvas.setPointerCapture(e.pointerId)});
+canvas.addEventListener('pointerup',()=>{down=false});
+canvas.addEventListener('pointermove',e=>{if(!down)return;let dx=e.clientX-px,dy=e.clientY-py;if(Math.abs(dx)+Math.abs(dy)>2)moved=true;px=e.clientX;py=e.clientY;theta-=dx*.006;phi=Math.max(.28,Math.min(1.49,phi+dy*.005));updateCamera()});
+canvas.addEventListener('wheel',e=>{radius=Math.max(13,Math.min(42,radius+e.deltaY*.018));updateCamera()},{passive:true});
+canvas.addEventListener('click',e=>{
+ if(moved)return;let r=canvas.getBoundingClientRect();mouse.x=((e.clientX-r.left)/r.width)*2-1;mouse.y=-((e.clientY-r.top)/r.height)*2+1;
+ ray.setFromCamera(mouse,camera);const hits=ray.intersectObjects(clickable.map(x=>x.obj),true);
+ if(hits.length){let root=hits[0].object;while(root.parent&&!clickable.some(x=>x.obj===root))root=root.parent;let d=clickable.find(x=>x.obj===root);
+ if(d){document.getElementById('infoTitle').textContent=d.title;document.getElementById('infoText').innerHTML=d.text.replaceAll('\\n','<br>')}}
+});
+window.setMode=function(mode){
+ if(mode==='devices'){target.set(0,1.8,1);radius=21;theta=.05;phi=1.12}
+ else if(mode==='people'){target.set(0,1.4,2);radius=23;theta=-.2;phi=.95}
+ else if(mode==='top'){target.set(0,0,0);radius=34;theta=.01;phi=.25}
+ else{target.set(0,2.1,-1);radius=28;theta=.18;phi=1.12}
+ updateCamera()
+};
 window.resetCamera=()=>setMode('all');
-function animate(){requestAnimationFrame(animate);renderer.render(scene,camera)}animate();
+let clock=new THREE.Clock();
+function animate(){requestAnimationFrame(animate);let t=clock.getElapsedTime();
+ animated.forEach((a,i)=>{a.obj.material.opacity=.55+.35*Math.sin(t*2+a.phase);a.obj.scale.setScalar(1+.035*Math.sin(t*2+a.phase))});
+ renderer.render(scene,camera)}
+animate();
 window.addEventListener('resize',()=>{renderer.setSize(wrap.clientWidth,wrap.clientHeight);camera.aspect=wrap.clientWidth/wrap.clientHeight;camera.updateProjectionMatrix()});
 </script></body></html>
 """
 
-left, center, right = st.columns([1.15, 3.5, 1.15], gap="small")
+
+left, center, right = st.columns([1.05, 3.9, 1.05], gap="small")
 
 with left:
     st.markdown('<div class="panel"><div class="panel-title">教室运行总览</div>', unsafe_allow_html=True)
