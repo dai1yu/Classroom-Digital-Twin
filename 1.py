@@ -95,8 +95,8 @@ if "task_no" not in st.session_state: st.session_state.task_no = 28
 if "camera" not in st.session_state: st.session_state.camera = "实训室全景"
 
 # ---------- 3D scene ----------
-def add_box(fig, x, y, z, dx, dy, dz, color, name, opacity=1.0):
-    # Eight vertices and twelve triangles for a cuboid
+def add_box(fig, x, y, z, dx, dy, dz, color, name, opacity=1.0, edge="#8bb7c3"):
+    """Add a cuboid with clean edges to the Plotly 3D scene."""
     xs=[x,x+dx,x+dx,x,x,x+dx,x+dx,x]
     ys=[y,y,y+dy,y+dy,y,y,y+dy,y+dy]
     zs=[z,z,z,z,z+dz,z+dz,z+dz,z+dz]
@@ -105,74 +105,184 @@ def add_box(fig, x, y, z, dx, dy, dz, color, name, opacity=1.0):
     kk=[2,3,5,3,6,7,6,7,7,4,4,0]
     fig.add_trace(go.Mesh3d(x=xs,y=ys,z=zs,i=ii,j=jj,k=kk,
         color=color,opacity=opacity,flatshading=True,name=name,showlegend=False,
+        lighting=dict(ambient=0.62,diffuse=0.72,specular=0.22,roughness=0.72),
         hovertemplate=f"{name}<extra></extra>"))
+    # subtle outline edges make the equipment read as solid objects
+    edges=[(0,1),(1,2),(2,3),(3,0),(4,5),(5,6),(6,7),(7,4),(0,4),(1,5),(2,6),(3,7)]
+    ex=[]; ey=[]; ez=[]
+    for a,b in edges:
+        ex += [xs[a],xs[b],None]; ey += [ys[a],ys[b],None]; ez += [zs[a],zs[b],None]
+    fig.add_trace(go.Scatter3d(x=ex,y=ey,z=ez,mode="lines",line=dict(color=edge,width=2),
+        showlegend=False,hoverinfo="skip"))
+
+
+def add_ball(fig, x, y, z, color, size=5, name="部件"):
+    fig.add_trace(go.Scatter3d(x=[x],y=[y],z=[z],mode="markers",
+        marker=dict(size=size,color=color,line=dict(color="#d6f7ff",width=.7),
+                    opacity=1,symbol="circle"),
+        name=name,showlegend=False,hovertemplate=f"{name}<extra></extra>"))
+
+
+def add_line(fig, x, y, z, color="#4d8190", width=2, name=None):
+    fig.add_trace(go.Scatter3d(x=x,y=y,z=z,mode="lines",
+        line=dict(color=color,width=width),showlegend=False,hoverinfo="skip",name=name))
+
 
 def make_lab_scene():
+    """A fuller classroom scene: room shell, windows, lighting, consoles, desks and CCTV."""
     fig=go.Figure()
-    # Floor plane
-    fig.add_trace(go.Mesh3d(x=[-12,12,12,-12],y=[-8,-8,8,8],z=[0,0,0,0],
-        i=[0,0],j=[1,2],k=[2,3],color="#183b4a",opacity=1,showlegend=False,hoverinfo="skip"))
-    # Floor grid
-    for x in range(-12,13,1):
-        fig.add_trace(go.Scatter3d(x=[x,x],y=[-8,8],z=[.025,.025],mode="lines",
-            line=dict(color="#315c68",width=1),showlegend=False,hoverinfo="skip"))
-    for y in range(-8,9,1):
-        fig.add_trace(go.Scatter3d(x=[-12,12],y=[y,y],z=[.025,.025],mode="lines",
-            line=dict(color="#315c68",width=1),showlegend=False,hoverinfo="skip"))
-    # Safety lanes
-    for x in [-10.5,10.5]:
-        fig.add_trace(go.Scatter3d(x=[x,x],y=[-7,7],z=[.05,.05],mode="lines",
-            line=dict(color="#e4c64b",width=5),showlegend=False,hoverinfo="skip"))
-    # Training consoles, arranged in two rows
-    positions=[(-8,-3),(-4,-3),(0,-3),(4,-3),(8,-3),(-5,3),(2,3)]
+
+    # --- Room floor and industrial safety markings ---
+    add_box(fig,-12.4,-9.2,-0.18,24.8,18.4,.18,"#203f4d","实训室防滑地面",edge="#527987")
+    # floor tile grid
+    for x in range(-12,13):
+        add_line(fig,[x,x],[-9,9],[.012,.012],"#456875",1)
+    for y in range(-9,10):
+        add_line(fig,[-12,12],[y,y],[.014,.014],"#456875",1)
+    # yellow safety walkways and machine bays
+    for x in [-10.9,10.9]:
+        add_line(fig,[x,x],[-8,8],[.04,.04],"#f0ca45",5)
+    add_line(fig,[-10,10],[-7.4,-7.4],[.045,.045],"#f0ca45",5)
+    add_line(fig,[-10,10],[7.2,7.2],[.045,.045],"#f0ca45",5)
+    # machine bay boundary stripes
+    for x in [-8.4,-2.8,2.8,8.4]:
+        add_line(fig,[x,x],[-5.7,5.7],[.035,.035],"#c3a943",2)
+
+    # --- Back and side walls ---
+    add_box(fig,-12.4,8.75,0,24.8,.22,6.5,"#183746","后墙",opacity=.92,edge="#4a7785")
+    add_box(fig,-12.4,-9.0,0,.22,18,6.5,"#173645","左侧墙",opacity=.72,edge="#426d7a")
+    add_box(fig,12.18,-9.0,0,.22,18,6.5,"#173645","右侧墙",opacity=.72,edge="#426d7a")
+    # wall cladding panels and skirting
+    for x in range(-11,12,2):
+        add_line(fig,[x,x],[8.61,8.61],[.2,6.2],"#315d6b",2)
+    add_box(fig,-12.2,8.48,0,24.4,.18,.42,"#294e5c","后墙踢脚线",edge="#7199a4")
+
+    # --- Windows along the rear wall ---
+    for x in [-8.7,-3.0,2.7,8.4]:
+        add_box(fig,x,8.48,3.45,4.35,.08,2.15,"#0b2d42","高窗玻璃",opacity=.96,edge="#56a4b7")
+        add_box(fig,x,8.39,4.42,4.35,.10,.08,"#5d8793","窗框横梁",edge="#9ac4ce")
+        add_box(fig,x+2.05,8.39,3.45,.08,.10,2.15,"#5d8793","窗框竖梁",edge="#9ac4ce")
+        # cool daylight reflection
+        add_line(fig,[x+.2,x+1.7],[8.34,8.34],[5.35,5.35],"#3b93a8",3)
+
+    # --- Door, wall sign and electrical trunking ---
+    add_box(fig,9.55,8.42,.05,2.0,.14,2.75,"#102a38","实训室安全门",edge="#7ba6b1")
+    add_box(fig,9.72,8.32,.25,1.65,.08,2.35,"#234d5c","安全门门板",edge="#a1c8d0")
+    add_box(fig,9.83,8.22,1.25,.12,.08,.12,"#d6c36a","门把手",edge="#fff0a8")
+    add_box(fig,-10.8,8.40,2.35,3.2,.10,.72,"#12384b","安全管理标牌",edge="#32c9dc")
+    add_line(fig,[-11.8,11.7],[8.30,8.30],[6.12,6.12],"#b34e39",4)
+    add_line(fig,[-11.8,11.7],[8.26,8.26],[5.85,5.85],"#d4a34a",2)
+
+    # --- Ceiling structure: open rafters keep the classroom visible ---
+    for x in [-11,-7,-3,1,5,9,11]:
+        add_box(fig,x,-9,6.15,.20,18,.20,"#466875","天花板横梁",edge="#82aab4")
+    for y in [-8,-4,0,4,8]:
+        add_box(fig,-12.2,y,6.30,24.4,.16,.16,"#345764","天花板纵梁",edge="#7096a2")
+    # industrial LED light strips
+    for x in [-8,-2,4,9]:
+        add_box(fig,x-1.15,-.12,6.02,2.3,.42,.10,"#9ac4cc","LED工业灯具",edge="#d6fbff")
+        add_box(fig,x-.95,-.06,5.98,1.9,.30,.035,"#38d9ec","灯光发光面",opacity=.95,edge="#8effff")
+    # visible suspended ventilation ducts
+    add_box(fig,-11.7,5.8,5.25,23.4,.48,.48,"#385d6b","主通风管道",edge="#8eb5bf")
+    for x in [-8,-2,4,9]:
+        add_box(fig,x,5.88,4.88,.32,.32,.42,"#527987","通风支管",edge="#9bc5cf")
+
+    # --- Training stations: three at rear, four at front ---
+    positions=[(-7.6,2.2),(-2.55,2.2),(2.55,2.2),(7.6,2.2),
+               (-7.6,-3.25),(-2.55,-3.25),(2.55,-3.25)]
     for idx,(x,y) in enumerate(positions,1):
-        add_box(fig,x-.9,y-.65,.08,1.8,1.3,2.15,"#527d8b",f"HPY-RS03 实训控制台 {idx}")
-        # dark screen panel
-        add_box(fig,x-.52,y-.68,1.48,1.05,.055,.48,"#071b2a",f"控制屏 {idx}")
-        add_box(fig,x-.4,y-.735,1.57,.8,.025,.27,"#13a9c2",f"显示区域 {idx}")
-        # front button plate and emergency stop
-        add_box(fig,x+.37,y-.75,1.05,.22,.10,.20,"#142a36",f"按键面板 {idx}")
-        fig.add_trace(go.Scatter3d(x=[x+.48],y=[y-.82],z=[1.18],mode="markers",
-            marker=dict(size=5,color="#ff4d59"),name="急停按钮",showlegend=False,
-            hovertemplate="红色急停按钮<extra></extra>"))
-        # handwheel on right side
-        fig.add_trace(go.Scatter3d(x=[x+.94,x+.94],y=[y-.12,y-.12],z=[1.45,1.45],
-            mode="markers",marker=dict(size=[7,3],color=["#1b2730","#c4e4ed"]),
-            showlegend=False,hoverinfo="skip"))
-        # stack light (red / amber / green)
-        for z,c in [(2.55,"#ff4e57"),(2.68,"#ffc04e"),(2.81,"#25e7a8")]:
-            fig.add_trace(go.Scatter3d(x=[x-.72],y=[y-.42],z=[z],mode="markers",
-                marker=dict(size=5,color=c),showlegend=False,hoverinfo="skip"))
-        # console foot glow
-        fig.add_trace(go.Scatter3d(x=[x],y=[y],z=[.06],mode="markers",
-            marker=dict(size=14,color="#00bcd4",opacity=.18),showlegend=False,hoverinfo="skip"))
-    # Tables and chairs
-    for x,y in [(-10,1),(10,1),(-9,5),(9,5)]:
-        add_box(fig,x-.7,y-.45,.08,1.4,.9,.85,"#416778","实训桌")
-        add_box(fig,x+.85,y-.2,.08,.55,.55,.48,"#294a5a","实训椅")
-        add_box(fig,x+.85,y-.2,.56,.55,.12,.62,"#365c6b","椅背")
-    # Instructor desk
-    add_box(fig,-1,6,.08,2.2,1.0,.95,"#345e70","教师讲台")
-    add_box(fig,-.65,5.92,1.05,1.5,.08,.65,"#071b2a","教师显示器")
-    # CCTV cameras
-    for x,y in [(-11,-6),(11,-6),(-11,6),(11,6)]:
-        fig.add_trace(go.Scatter3d(x=[x],y=[y],z=[4.7],mode="markers",
-            marker=dict(size=7,color="#9ed9e6",symbol="diamond"),name="监控摄像头",
-            showlegend=False,hovertemplate="监控摄像头<extra></extra>"))
+        # base plinth and cabinet body
+        add_box(fig,x-1.12,y-.82,.08,2.24,1.64,.24,"#1b3440",f"实训台{idx}底座",edge="#7d9da7")
+        add_box(fig,x-1.02,y-.72,.32,2.04,1.44,2.42,"#567f8d",f"HPY-RS03控制柜{idx}",edge="#b2d2d8")
+        # top cap and side service panel
+        add_box(fig,x-1.08,y-.76,2.73,2.16,1.52,.16,"#789eaa",f"实训台{idx}顶部盖板",edge="#d0e7eb")
+        add_box(fig,x+.77,y-.66,.52,.20,1.28,1.92,"#294b5a",f"实训台{idx}侧检修板",edge="#8bb3bd")
+        # front access door, darker viewing window and vertical handles
+        add_box(fig,x- .82,y-.755,.55,1.18,.055,1.92,"#315e6e",f"实训台{idx}前门",edge="#a9cbd2")
+        add_box(fig,x-.70,y-.79,1.08,.94,.035,1.12,"#0b2637",f"实训台{idx}观察窗",edge="#64a2b1")
+        add_line(fig,[x-.22,x-.22],[y-.81,y-.81],[1.18,2.10],"#6fa4b1",2)
+        add_box(fig,x+.52,y-.80,.80,.055,.07,.17,"#d6e6e9",f"实训台{idx}门把手",edge="#f1ffff")
+        # upper display housing with cyan screen
+        add_box(fig,x-.70,y-.91,2.02,1.18,.18,.62,"#142c3a",f"实训台{idx}显示器外壳",edge="#9bc5cf")
+        add_box(fig,x-.60,y-1.015,2.12,.98,.035,.40,"#08202f",f"实训台{idx}显示屏",edge="#20c8df")
+        # screen UI traces
+        add_line(fig,[x-.48,x-.18,x+.12,x+.42],[y-1.06]*4,[2.38,2.46,2.40,2.52],"#25d9e9",3)
+        add_line(fig,[x-.48,x-.18,x+.12,x+.42],[y-1.065]*4,[2.25,2.30,2.27,2.35],"#3a8da7",2)
+        # control keypad plate and key buttons
+        add_box(fig,x+.48,y-.93,1.35,.42,.17,.78,"#172c38",f"实训台{idx}按键面板",edge="#aacbd2")
+        for r in range(3):
+            for c in range(3):
+                col=["#c9e8eb","#27c9dc","#e3bd51"][(r+c)%3]
+                add_ball(fig,x+.55+c*.13,y-1.045,1.94-r*.17,col,3.2,"操作按键")
+        # emergency stop: yellow collar + red mushroom
+        add_ball(fig,x+.67,y-1.08,1.47,"#e8b83d",7,"急停按钮保护圈")
+        add_ball(fig,x+.67,y-1.105,1.52,"#f0444e",5.5,"红色急停按钮")
+        # manual pulse generator handwheel, ring and hub
+        add_ball(fig,x+.94,y-1.02,1.03,"#182a34",8,"手轮外圈")
+        add_ball(fig,x+.94,y-1.07,1.03,"#c4dce1",3.4,"手轮中心")
+        add_line(fig,[x+.94,x+.94],[y-1.08,y-1.08],[.88,1.18],"#b5d4dc",2)
+        # status stack light on top, red / amber / green
+        add_box(fig,x-.84,y-.52,2.89,.08,.08,.36,"#253e49","三色灯灯杆",edge="#b1cbd0")
+        add_ball(fig,x-.80,y-.48,3.30,"#f34c58",5.5,"红色信号灯")
+        add_ball(fig,x-.80,y-.48,3.43,"#ffc24e",5.5,"黄色信号灯")
+        add_ball(fig,x-.80,y-.48,3.56,"#20e5a6",5.5,"绿色信号灯")
+        # lower ventilation grille and feet
+        for k in range(4):
+            add_line(fig,[x-.62+k*.16,x-.62+k*.16],[y-.80,y-.80],[.48,.76],"#9bbcc5",1)
+        for fx in [x-.82,x+.72]:
+            add_box(fig,fx,y-.56,.02,.16,.92,.10,"#101f29","设备支脚",edge="#5b7e89")
+        # floor position label
+        add_box(fig,x-1.0,y-1.18,.025,2.0,.20,.025,"#d6b94a",f"工位{idx:02d}地标线",edge="#f8e28a")
+
+    # --- Work tables, chairs and instructor station ---
+    def furniture_table(tx,ty,label):
+        add_box(fig,tx-.95,ty-.48,.78,1.9,.96,.12,"#527887",label+"桌面",edge="#b1d0d7")
+        for lx in [tx-.82,tx+.72]:
+            for ly in [ty-.35,ty+.28]:
+                add_box(fig,lx,ly,.08,.10,.10,.70,"#304d5a",label+"桌腿",edge="#6f929d")
+        add_box(fig,tx-.52,ty-.24,.91,1.05,.05,.46,"#102c3b",label+"桌面显示器",edge="#7fb0bc")
+        add_box(fig,tx-.42,ty-.30,.99,.85,.035,.32,"#071a29",label+"屏幕",edge="#27bcd2")
+    furniture_table(-10.0,1.5,"学生讨论桌A")
+    furniture_table(10.0,1.5,"学生讨论桌B")
+    # chairs with seat, back and four legs
+    for cx,cy in [(-10.2,-.3),(-8.7,-.3),(8.7,-.3),(10.2,-.3),(-10.2,3.1),(10.2,3.1)]:
+        add_box(fig,cx-.28,cy-.25,.48,.56,.52,.13,"#315a6a","实训椅坐垫",edge="#8fb4bf")
+        add_box(fig,cx-.28,cy+.18,.62,.56,.12,.72,"#426e7d","实训椅靠背",edge="#9bc1ca")
+        for lx in [cx-.20,cx+.18]:
+            for ly in [cy-.16,cy+.12]:
+                add_box(fig,lx,ly,.08,.07,.07,.42,"#243d49","椅腿",edge="#688995")
+    # instructor desk at front-left side
+    add_box(fig,-10.8,-6.25,.10,3.0,1.25,.95,"#385f70","教师讲台",edge="#9fc2ca")
+    add_box(fig,-10.3,-6.42,1.08,1.65,.16,.82,"#102a39","教师电脑显示器",edge="#7db5c3")
+    add_box(fig,-10.22,-6.52,1.18,1.48,.04,.62,"#061b2a","教师显示屏",edge="#27c6dc")
+    add_box(fig,-9.65,-5.95,1.03,.8,.48,.08,"#263f4b","键盘",edge="#8caeb8")
+
+    # --- CCTV cameras mounted high in corners with brackets ---
+    for cx,cy in [(-11.5,7.8),(11.5,7.8),(-11.5,-7.8),(11.5,-7.8)]:
+        add_box(fig,cx-.12,cy-.12,5.65,.24,.24,.42,"#536f7a","摄像头支架",edge="#a6c6ce")
+        add_box(fig,cx-.30,cy-.35,5.48,.60,.52,.24,"#a2c3ca","监控摄像头",edge="#d9f4f7")
+        add_ball(fig,cx,cy-.38,5.59,"#f34e5a",3.4,"摄像头指示灯")
+        add_line(fig,[cx,cx],[cy-.4,cy-1.1],[5.5,4.65],"#317e91",1)
+
+    # subtle room labels
+    fig.add_trace(go.Scatter3d(x=[-10.5],y=[8.28],z=[3.0],mode="text",
+        text=["智能制造实训区"],textfont=dict(color="#c4f4fb",size=11),showlegend=False,hoverinfo="skip"))
     fig.update_layout(
-        height=580, margin=dict(l=0,r=0,t=5,b=0),
-        paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)",
+        height=650, margin=dict(l=0,r=0,t=0,b=0),
+        paper_bgcolor="rgba(0,0,0,0)",plot_bgcolor="rgba(0,0,0,0)",
         scene=dict(
             bgcolor="#041725",
             xaxis=dict(visible=False,range=[-13,13]),
-            yaxis=dict(visible=False,range=[-9,9]),
-            zaxis=dict(visible=False,range=[0,5.5]),
-            camera=dict(eye=dict(x=1.55,y=-1.9,z=1.15),center=dict(x=0,y=0,z=.15)),
-            aspectmode="manual",aspectratio=dict(x=1.65,y=1.1,z=.62)
-        ),
-        showlegend=False
+            yaxis=dict(visible=False,range=[-10,10]),
+            zaxis=dict(visible=False,range=[0,7]),
+            camera=dict(eye=dict(x=1.62,y=-2.25,z=1.32),center=dict(x=0,y=0,z=0.34),up=dict(x=0,y=0,z=1)),
+            aspectmode="manual",aspectratio=dict(x=1.72,y=1.30,z=.78),
+            dragmode="orbit"
+        ),showlegend=False,
+        font=dict(color="#c9edf4")
     )
     return fig
+
 
 # ---------- Layout ----------
 left, center, right = st.columns([.95, 2.45, .95], gap="small")
@@ -211,7 +321,7 @@ with left:
 
 with center:
     st.markdown('<div class="panel"><div class="panel-title">智能制造实训室三维场景 <small>FACTORY 3D DIGITAL TWIN</small></div>',unsafe_allow_html=True)
-    st.caption("HPY-RS03 恒佩优立式一体化实训控制台　·　实训工位三维分布　·　设备状态可视化")
+    st.caption("完整实训室空间｜7 台 HPY-RS03 恒佩优立式一体化实训控制台｜桌椅、讲台、门窗、顶棚灯具、通风管道及 CCTV")
     st.plotly_chart(make_lab_scene(),use_container_width=True,config={"displayModeBar":True,"displaylogo":False})
     st.markdown('</div>',unsafe_allow_html=True)
     m1,m2,m3=st.columns(3)
