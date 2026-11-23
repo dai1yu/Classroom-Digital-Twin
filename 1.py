@@ -9,7 +9,7 @@ import streamlit as st
 import streamlit.components.v1 as components
 
 st.set_page_config(
-    page_title="课堂数字孪生平台",
+    page_title="课堂教学数字孪生平台",
     page_icon="🏭",
     layout="wide",
     initial_sidebar_state="collapsed",
