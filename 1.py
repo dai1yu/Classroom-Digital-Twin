@@ -101,7 +101,7 @@ html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#04131e;col
 <div id="app">
 <canvas id="scene"></canvas>
 <div class="topbar">
-  <div class="brand">课堂数字孪生平台<small>CLASSROOM DIGITAL TWIN · INTELLIGENT TRAINING CENTER</small></div>
+  <div class="brand">课堂教学数字孪生平台<small>CLASSROOM DIGITAL TWIN · INTELLIGENT TRAINING CENTER</small></div>
   <div class="top-actions">
     <button class="top-btn" onclick="showPanel('overview')">实训总览</button>
     <button class="top-btn" onclick="showPanel('devices')">设备管理</button>
